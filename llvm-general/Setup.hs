@@ -108,8 +108,8 @@ main = do
     confHook = \(genericPackageDescription, hookedBuildInfo) configFlags -> do
       llvmConfig <- getLLVMConfig configFlags
 
-      rawLlvmCxxFlags <- llvmConfig "--cxxflags"
-      let llvmCppFlags = (filter ("-D" `isPrefixOf`) $ words rawLlvmCxxFlags)
+      rawLlvmCxxFlags <- words <$> llvmConfig "--cxxflags"
+      let llvmCppFlags = (filter ("-D" `isPrefixOf`) rawLlvmCxxFlags)
                          \\ (map ("-D"++) uncheckedHsFFIDefines)
       includeDirs <- liftM lines $ llvmConfig "--includedir"
       libDirs@[libDir] <- liftM lines $ llvmConfig "--libdir"
@@ -121,15 +121,17 @@ main = do
       systemLibs <- liftM (map (fromJust . stripPrefix "-l") . words) $ llvmConfig "--system-libs"
 
       let stdLibPrefix = "-stdlib=lib"
-          stdLib = maybe [] (pure . drop (length stdLibPrefix)) $
-                   find (isPrefixOf stdLibPrefix) (words rawLlvmCxxFlags)
+          stdLibFlag = find (isPrefixOf stdLibPrefix) rawLlvmCxxFlags
+          stdLib = maybe [] (pure . drop (length stdLibPrefix)) stdLibFlag
+          relevantCxxFlagNames = ["-fno-rtti"]
+          llvmCxxFlags = maybeToList stdLibFlag ++ filter (`elem` relevantCxxFlagNames) rawLlvmCxxFlags
           genericPackageDescription' = genericPackageDescription {
             condLibrary = do
               libraryCondTree <- condLibrary genericPackageDescription
               return libraryCondTree {
                 condTreeData = condTreeData libraryCondTree <> mempty {
                     libBuildInfo = mempty {
-                      ccOptions = "-std=c++11" : llvmCppFlags,
+                      ccOptions = "-std=c++11" : llvmCppFlags ++ llvmCxxFlags,
                       extraLibs = stdLib
                     }
                   },
