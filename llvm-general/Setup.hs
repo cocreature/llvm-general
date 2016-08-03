@@ -2,7 +2,7 @@
 import Control.Exception (SomeException, try)
 import Control.Monad
 import Data.Maybe
-import Data.List (isPrefixOf, (\\), intercalate, stripPrefix)
+import Data.List (isPrefixOf, (\\), intercalate, stripPrefix, find)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Monoid
@@ -108,9 +108,9 @@ main = do
     confHook = \(genericPackageDescription, hookedBuildInfo) configFlags -> do
       llvmConfig <- getLLVMConfig configFlags
 
-      llvmCxxFlags <- do
-        l <- llvmConfig "--cxxflags"
-        return $ (words l) \\ (map ("-D"++) uncheckedHsFFIDefines)
+      rawLlvmCxxFlags <- llvmConfig "--cxxflags"
+      let llvmCppFlags = (filter ("-D" `isPrefixOf`) $ words rawLlvmCxxFlags)
+                         \\ (map ("-D"++) uncheckedHsFFIDefines)
       includeDirs <- liftM lines $ llvmConfig "--includedir"
       libDirs@[libDir] <- liftM lines $ llvmConfig "--libdir"
       [llvmVersion] <- liftM lines $ llvmConfig "--version"
@@ -120,12 +120,18 @@ main = do
       staticLibs <- liftM (map (fromJust . stripPrefix "-l") . words) $ llvmConfig "--libs"
       systemLibs <- liftM (map (fromJust . stripPrefix "-l") . words) $ llvmConfig "--system-libs"
 
-      let genericPackageDescription' = genericPackageDescription {
+      let stdLibPrefix = "-stdlib=lib"
+          stdLib = maybe [] (pure . drop (length stdLibPrefix)) $
+                   find (isPrefixOf stdLibPrefix) (words rawLlvmCxxFlags)
+          genericPackageDescription' = genericPackageDescription {
             condLibrary = do
               libraryCondTree <- condLibrary genericPackageDescription
               return libraryCondTree {
                 condTreeData = condTreeData libraryCondTree <> mempty {
-                    libBuildInfo = mempty { ccOptions = llvmCxxFlags }
+                    libBuildInfo = mempty {
+                      ccOptions = "-std=c++11" : llvmCppFlags,
+                      extraLibs = stdLib
+                    }
                   },
                 condTreeComponents = condTreeComponents libraryCondTree ++ [
                   (
