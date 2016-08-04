@@ -39,7 +39,7 @@ import qualified LLVM.General.Internal.FFI.Target as FFI
 import qualified LLVM.General.Internal.FFI.Value as FFI
 
 import LLVM.General.Internal.Attribute
-import LLVM.General.Internal.BasicBlock  
+import LLVM.General.Internal.BasicBlock
 import LLVM.General.Internal.Coding
 import LLVM.General.Internal.Context
 import LLVM.General.Internal.DecodeAST
@@ -215,6 +215,19 @@ getDataLayout :: Ptr FFI.Module -> IO (Maybe A.DataLayout)
 getDataLayout m = do
   dlString <- decodeM =<< FFI.getDataLayout m
   either fail return . runExcept . parseDataLayout A.BigEndian $ dlString
+
+-- | Build an LLVM.General.'Module' from a
+-- LLVM.General.AST.'LLVM.General.AST.Module' with a 'DataLayout'
+-- appropriate for the given 'TargetMachine'. This is important for
+-- native code generation as it impacts name mangling.
+withModuleFromASTForTargetMachine :: Context -> TargetMachine -> A.Module
+                                  -> (Module -> IO a) -> ExceptT String IO a
+withModuleFromASTForTargetMachine c tm m f =
+  do m' <- case A.moduleDataLayout m of
+             Nothing -> do dl <- liftIO $ getTargetMachineDataLayout tm
+                           return (m { A.moduleDataLayout = Just dl })
+             Just _ -> return m
+     withModuleFromAST c m' f
 
 -- | Build an LLVM.General.'Module' from a LLVM.General.AST.'LLVM.General.AST.Module' - i.e.
 -- lower an AST from Haskell into C++ objects.
