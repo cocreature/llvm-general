@@ -108,7 +108,7 @@ main = do
     confHook = \(genericPackageDescription, hookedBuildInfo) configFlags -> do
       llvmConfig <- getLLVMConfig configFlags
 
-      rawLlvmCxxFlags <- words <$> llvmConfig "--cxxflags"
+      rawLlvmCxxFlags <- fmap words (llvmConfig "--cxxflags")
       let llvmCppFlags = (filter ("-D" `isPrefixOf`) rawLlvmCxxFlags)
                          \\ (map ("-D"++) uncheckedHsFFIDefines)
       includeDirs <- liftM lines $ llvmConfig "--includedir"
@@ -125,7 +125,7 @@ main = do
           -- llvm-config doesn’t show an stdlib flag when compiled
           -- against libstdc++ so we need to fallback to that if no
           -- flag is available.
-          stdLib = maybe ["stdc++"] (pure . drop (length stdLibPrefix)) stdLibFlag
+          stdLib = maybe ["stdc++"] (return . drop (length stdLibPrefix)) stdLibFlag
           relevantCxxFlagNames = ["-fno-rtti"]
           llvmCxxFlags = maybeToList stdLibFlag ++ filter (`elem` relevantCxxFlagNames) rawLlvmCxxFlags
           genericPackageDescription' = genericPackageDescription {
