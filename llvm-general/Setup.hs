@@ -122,7 +122,10 @@ main = do
 
       let stdLibPrefix = "-stdlib=lib"
           stdLibFlag = find (isPrefixOf stdLibPrefix) rawLlvmCxxFlags
-          stdLib = maybe [] (pure . drop (length stdLibPrefix)) stdLibFlag
+          -- llvm-config doesn’t show an stdlib flag when compiled
+          -- against libstdc++ so we need to fallback to that if no
+          -- flag is available.
+          stdLib = maybe ["stdc++"] (pure . drop (length stdLibPrefix)) stdLibFlag
           relevantCxxFlagNames = ["-fno-rtti"]
           llvmCxxFlags = maybeToList stdLibFlag ++ filter (`elem` relevantCxxFlagNames) rawLlvmCxxFlags
           genericPackageDescription' = genericPackageDescription {
