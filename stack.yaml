@@ -1,0 +1,7 @@
+resolver: nightly-2016-03-04
+packages:
+  - llvm-general/
+  - llvm-general-pure/
+extra-deps: []
+flags: {}
+extra-package-dbs: []
