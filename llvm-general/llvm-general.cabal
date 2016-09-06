@@ -111,7 +111,6 @@ library
     LLVM.General.Internal.Global
     LLVM.General.Internal.Inject
     LLVM.General.Internal.InlineAssembly
-    LLVM.General.Internal.Instruction
     LLVM.General.Internal.InstructionDefs
     LLVM.General.Internal.IntegerPredicate
     LLVM.General.Internal.LibraryFunction
