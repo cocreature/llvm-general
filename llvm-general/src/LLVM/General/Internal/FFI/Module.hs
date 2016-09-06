@@ -10,7 +10,6 @@ import LLVM.General.Internal.FFI.Context
 import LLVM.General.Internal.FFI.GlobalValue (COMDAT)
 import LLVM.General.Internal.FFI.LLVMCTypes
 import LLVM.General.Internal.FFI.PtrHierarchy
-import LLVM.General.Internal.FFI.Type
 
 data Module
 
@@ -64,15 +63,6 @@ foreign import ccall unsafe "LLVM_General_GetFirstNamedMetadata" getFirstNamedMe
 
 foreign import ccall unsafe "LLVM_General_GetNextNamedMetadata" getNextNamedMetadata ::
   Ptr NamedMetadata -> IO (Ptr NamedMetadata)
-
-foreign import ccall unsafe "LLVMAddGlobalInAddressSpace" addGlobalInAddressSpace ::
-  Ptr Module -> Ptr Type -> CString -> CUInt -> IO (Ptr GlobalVariable)
-
-foreign import ccall unsafe "LLVM_General_JustAddAlias" justAddAlias ::
-  Ptr Module -> Ptr Type -> AddrSpace -> CString -> IO (Ptr GlobalAlias)
-
-foreign import ccall unsafe "LLVMAddFunction" addFunction ::
-  Ptr Module -> CString -> Ptr Type -> IO (Ptr Function)
 
 foreign import ccall unsafe "LLVMGetNamedFunction" getNamedFunction ::
   Ptr Module -> CString -> IO (Ptr Function)

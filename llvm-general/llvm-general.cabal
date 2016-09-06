@@ -24,7 +24,6 @@ extra-source-files:
   src/LLVM/General/Internal/FFI/LibFunc.h
   src/LLVM/General/Internal/FFI/Module.h
   src/LLVM/General/Internal/FFI/Target.h
-  src/LLVM/General/Internal/FFI/Type.h
 tested-with: GHC == 7.8.4, GHC == 7.10.3, GHC == 8.0.1
 
 source-repository head
@@ -110,7 +109,6 @@ library
     LLVM.General.Internal.FFI.RawOStream
     LLVM.General.Internal.FFI.Target
     LLVM.General.Internal.FFI.Transforms
-    LLVM.General.Internal.FFI.Type
 
   include-dirs: src
   c-sources:
@@ -120,7 +118,6 @@ library
     src/LLVM/General/Internal/FFI/RawOStreamC.cpp
     src/LLVM/General/Internal/FFI/PassManagerC.cpp
     src/LLVM/General/Internal/FFI/TargetC.cpp
-    src/LLVM/General/Internal/FFI/TypeC.cpp
 
   if flag(debug)
     cc-options: -g
