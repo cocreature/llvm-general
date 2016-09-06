@@ -23,7 +23,7 @@ import qualified LLVM.General.Transforms as G
 
 data PassManager
 
-foreign import ccall unsafe "LLVMCreatePassManager" createPassManager ::
+foreign import ccall unsafe "LLVM_General_CreatePassManager" createPassManager ::
   IO (Ptr PassManager)
 
 disposePassManager :: Ptr PassManager -> IO ()
