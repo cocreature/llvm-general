@@ -89,7 +89,6 @@ library
     LLVM.General
     LLVM.General.CodeGenOpt
     LLVM.General.CodeModel
-    LLVM.General.Context
     LLVM.General.Diagnostic
     LLVM.General.Module
     LLVM.General.Relocation
