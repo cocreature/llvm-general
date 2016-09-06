@@ -13,56 +13,33 @@ import Control.Exception
 import Control.Monad.AnyCont
 import Control.Monad.Error.Class
 import Control.Monad.Trans.Except
-import Control.Monad.State (gets)
 import Control.Monad.Trans
 
 import Foreign.Ptr
 import Foreign.C
 import Data.IORef
 import qualified Data.ByteString as BS
-import qualified Data.Map as Map
 
 import qualified LLVM.General.Internal.FFI.Assembly as FFI
-import qualified LLVM.General.Internal.FFI.Builder as FFI
 import qualified LLVM.General.Internal.FFI.Bitcode as FFI
-import qualified LLVM.General.Internal.FFI.Function as FFI
-import qualified LLVM.General.Internal.FFI.GlobalAlias as FFI
-import qualified LLVM.General.Internal.FFI.GlobalValue as FFI
-import qualified LLVM.General.Internal.FFI.GlobalVariable as FFI
-import qualified LLVM.General.Internal.FFI.Iterate as FFI
 import qualified LLVM.General.Internal.FFI.LLVMCTypes as FFI
 import qualified LLVM.General.Internal.FFI.MemoryBuffer as FFI
-import qualified LLVM.General.Internal.FFI.Metadata as FFI
 import qualified LLVM.General.Internal.FFI.Module as FFI
-import qualified LLVM.General.Internal.FFI.PtrHierarchy as FFI
 import qualified LLVM.General.Internal.FFI.RawOStream as FFI
 import qualified LLVM.General.Internal.FFI.Target as FFI
-import qualified LLVM.General.Internal.FFI.Value as FFI
 
-import LLVM.General.Internal.Attribute
 import LLVM.General.Internal.Coding
 import LLVM.General.Internal.Context
-import LLVM.General.Internal.DecodeAST
 import LLVM.General.Internal.EncodeAST
-import LLVM.General.Internal.Function
-import LLVM.General.Internal.Global
 import LLVM.General.Internal.Inject
-import LLVM.General.Internal.Instruction ()
 import qualified LLVM.General.Internal.MemoryBuffer as MB
-import LLVM.General.Internal.Metadata
-import LLVM.General.Internal.Operand
 import LLVM.General.Internal.RawOStream
 import LLVM.General.Internal.String
 import LLVM.General.Internal.Target
-import LLVM.General.Internal.Type
-import LLVM.General.Internal.Value
 
 import LLVM.General.DataLayout
 
-import qualified LLVM.General.AST as A
 import qualified LLVM.General.AST.DataLayout as A
-import qualified LLVM.General.AST.AddrSpace as A
-import qualified LLVM.General.AST.Global as A.G
 
 -- | <http://llvm.org/doxygen/classllvm_1_1Module.html>
 newtype Module = Module (Ptr FFI.Module)
@@ -211,221 +188,3 @@ getDataLayout :: Ptr FFI.Module -> IO (Maybe A.DataLayout)
 getDataLayout m = do
   dlString <- decodeM =<< FFI.getDataLayout m
   either fail return . runExcept . parseDataLayout A.BigEndian $ dlString
-
--- | Build an LLVM.General.'Module' from a LLVM.General.AST.'LLVM.General.AST.Module' - i.e.
--- lower an AST from Haskell into C++ objects.
-withModuleFromAST :: Context -> A.Module -> (Module -> IO a) -> ExceptT String IO a
-withModuleFromAST context@(Context c) (A.Module moduleId dataLayout triple definitions) f = runEncodeAST context $ do
-  moduleId <- encodeM moduleId
-  m <- anyContToM $ bracket (FFI.moduleCreateWithNameInContext moduleId c) FFI.disposeModule
-  maybe (return ()) (setDataLayout m) dataLayout
-  maybe (return ()) (setTargetTriple m) triple
-  let sequencePhases :: EncodeAST [EncodeAST (EncodeAST (EncodeAST (EncodeAST ())))] -> EncodeAST ()
-      sequencePhases l = (l >>= (sequence >=> sequence >=> sequence >=> sequence)) >> (return ())
-
-  sequencePhases $ forM definitions $ \d -> case d of
-   A.TypeDefinition n t -> do
-     t' <- createNamedType n
-     defineType n t'
-     return $ do
-       maybe (return ()) (setNamedType t') t
-       return . return . return . return $ ()
-
-   A.COMDAT n csk -> do
-     n' <- encodeM n
-     csk <- encodeM csk
-     cd <- liftIO $ FFI.getOrInsertCOMDAT m n'
-     liftIO $ FFI.setCOMDATSelectionKind cd csk
-     defineCOMDAT n cd
-     return . return . return . return . return $ ()
-     
-   A.MetadataNodeDefinition i os -> return . return $ do
-     t <- liftIO $ FFI.createTemporaryMDNodeInContext c
-     defineMDNode i t
-     return $ do
-       n <- encodeM (A.MetadataNode os)
-       liftIO $ FFI.metadataReplaceAllUsesWith (FFI.upCast t) (FFI.upCast n)
-       defineMDNode i n
-       return $ return ()
-
-   A.NamedMetadataDefinition n ids -> return . return . return . return $ do
-     n <- encodeM n
-     ids <- encodeM (map A.MetadataNodeReference ids)
-     nm <- liftIO $ FFI.getOrAddNamedMetadata m n
-     liftIO $ FFI.namedMetadataAddOperands nm ids
-     return ()
-
-   A.ModuleInlineAssembly s -> do
-     s <- encodeM s
-     liftIO $ FFI.moduleAppendInlineAsm m (FFI.ModuleAsm s)
-     return . return . return . return . return $ ()
-
-   A.FunctionAttributes gid attrs -> do
-     attrs <- encodeM attrs
-     defineAttributeGroup gid attrs
-     return . return . return . return . return $ ()
-
-   A.GlobalDefinition g -> return . phase $ do
-     eg' :: EncodeAST (Ptr FFI.GlobalValue) <- case g of
-       g@(A.GlobalVariable { A.G.name = n }) -> do
-         typ <- encodeM (A.G.type' g)
-         g' <- liftIO $ withName n $ \gName ->
-                   FFI.addGlobalInAddressSpace m typ gName
-                          (fromIntegral ((\(A.AddrSpace a) -> a) $ A.G.addrSpace g))
-         defineGlobal n g'
-         setThreadLocalMode g' (A.G.threadLocalMode g)
-         liftIO $ do
-           hua <- encodeM (A.G.hasUnnamedAddr g)
-           FFI.setUnnamedAddr (FFI.upCast g') hua
-           ic <- encodeM (A.G.isConstant g)
-           FFI.setGlobalConstant g' ic
-         return $ do
-           maybe (return ()) ((liftIO . FFI.setInitializer g') <=< encodeM) (A.G.initializer g)
-           setSection g' (A.G.section g)
-           setCOMDAT g' (A.G.comdat g)
-           setAlignment g' (A.G.alignment g)
-           return (FFI.upCast g')
-       (a@A.G.GlobalAlias { A.G.name = n }) -> do
-         let A.PointerType typ as = A.G.type' a
-         typ <- encodeM typ
-         as <- encodeM as
-         a' <- liftIO $ withName n $ \name -> FFI.justAddAlias m typ as name
-         defineGlobal n a'
-         liftIO $ do
-           hua <- encodeM (A.G.hasUnnamedAddr a)
-           FFI.setUnnamedAddr (FFI.upCast a') hua
-         return $ do
-           setThreadLocalMode a' (A.G.threadLocalMode a)
-           (liftIO . FFI.setAliasee a') =<< encodeM (A.G.aliasee a)
-           return (FFI.upCast a')
-       (A.Function _ _ _ cc rAttrs resultType fName (args, isVarArgs) attrs _ _ _ gc prefix blocks personality) -> do
-         typ <- encodeM $ A.FunctionType resultType [t | A.Parameter t _ _ <- args] isVarArgs
-         f <- liftIO . withName fName $ \fName -> FFI.addFunction m fName typ
-         defineGlobal fName f
-         cc <- encodeM cc
-         liftIO $ FFI.setFunctionCallingConvention f cc
-         setFunctionAttributes f (MixedAttributeSet attrs rAttrs (Map.fromList $ zip [0..] [pa | A.Parameter _ _ pa <- args]))
-         setPrefixData f prefix
-         setSection f (A.G.section g)
-         setCOMDAT f (A.G.comdat g)
-         setAlignment f (A.G.alignment g)
-         setGC f gc
-         setPersonalityFn f personality
-         forM blocks $ \(A.BasicBlock bName _ _) -> do
-           b <- liftIO $ withName bName $ \bName -> FFI.appendBasicBlockInContext c f bName
-           defineBasicBlock fName bName b
-         phase $ do
-           let nParams = length args
-           ps <- allocaArray nParams
-           liftIO $ FFI.getParams f ps
-           params <- peekArray nParams ps
-           forM (zip args params) $ \(A.Parameter _ n _, p) -> do
-             defineLocal n p
-             n <- encodeM n
-             liftIO $ FFI.setValueName (FFI.upCast p) n
-           finishInstrs <- forM blocks $ \(A.BasicBlock bName namedInstrs term) -> do
-             b <- encodeM bName
-             (do
-               builder <- gets encodeStateBuilder
-               liftIO $ FFI.positionBuilderAtEnd builder b)
-             finishes <- mapM encodeM namedInstrs :: EncodeAST [EncodeAST ()]
-             (encodeM term :: EncodeAST (Ptr FFI.Instruction))
-             return (sequence_ finishes)
-           sequence_ finishInstrs
-           locals <- gets $ Map.toList . encodeStateLocals
-           forM [ n | (n, ForwardValue _) <- locals ] $ \n -> undefinedReference "local" n
-           return (FFI.upCast f)
-     return $ do
-       g' <- eg'
-       setLinkage g' (A.G.linkage g)
-       setVisibility g' (A.G.visibility g)
-       setDLLStorageClass g' (A.G.dllStorageClass g)
-       return $ return ()
-
-  liftIO $ f (Module m)
-
--- | Get an LLVM.General.AST.'LLVM.General.AST.Module' from a LLVM.General.'Module' - i.e.
--- raise C++ objects into an Haskell AST.
-moduleAST :: Module -> IO A.Module
-moduleAST (Module mod) = runDecodeAST $ do
-  c <- return Context `ap` liftIO (FFI.getModuleContext mod)
-  getMetadataKindNames c
-  return A.Module
-   `ap` (liftIO $ decodeM =<< FFI.getModuleIdentifier mod)
-   `ap` (liftIO $ getDataLayout mod)
-   `ap` (liftIO $ do
-           s <- decodeM <=< FFI.getTargetTriple $ mod
-           return $ if s == "" then Nothing else Just s)
-   `ap` (
-     do
-       gs <- map A.GlobalDefinition . concat <$> (join . liftM sequence . sequence) [
-          do
-            ffiGlobals <- liftIO $ FFI.getXs (FFI.getFirstGlobal mod) FFI.getNextGlobal
-            liftM sequence . forM ffiGlobals $ \g -> do
-              A.PointerType t as <- typeOf g
-              n <- getGlobalName g
-              return $ return A.GlobalVariable
-               `ap` return n
-               `ap` getLinkage g
-               `ap` getVisibility g
-               `ap` getDLLStorageClass g
-               `ap` getThreadLocalMode g
-               `ap` return as
-               `ap` (liftIO $ decodeM =<< FFI.hasUnnamedAddr (FFI.upCast g))
-               `ap` (liftIO $ decodeM =<< FFI.isGlobalConstant g)
-               `ap` return t
-               `ap` (do
-                      i <- liftIO $ FFI.getInitializer g
-                      if i == nullPtr then return Nothing else Just <$> decodeM i)
-               `ap` getSection g
-               `ap` getCOMDATName g
-               `ap` getAlignment g,
-
-          do
-            ffiAliases <- liftIO $ FFI.getXs (FFI.getFirstAlias mod) FFI.getNextAlias
-            liftM sequence . forM ffiAliases $ \a -> do
-              n <- getGlobalName a
-              return $ return A.G.GlobalAlias
-               `ap` return n
-               `ap` getLinkage a
-               `ap` getVisibility a
-               `ap` getDLLStorageClass a
-               `ap` getThreadLocalMode a
-               `ap` (liftIO $ decodeM =<< FFI.hasUnnamedAddr (FFI.upCast a))
-               `ap` typeOf a
-               `ap` (decodeM =<< (liftIO $ FFI.getAliasee a)),
-
-          do
-            ffiFunctions <- liftIO $ FFI.getXs (FFI.getFirstFunction mod) FFI.getNextFunction
-            liftM sequence . forM ffiFunctions $ \f -> localScope $ do
-              A.PointerType (A.FunctionType returnType _ isVarArg) _ <- typeOf f
-              n <- getGlobalName f
-              MixedAttributeSet fAttrs rAttrs pAttrs <- getMixedAttributeSet f
-              parameters <- getParameters f pAttrs
-              undefined
-        ]
-
-       tds <- getStructDefinitions
-
-       ias <- decodeM =<< liftIO (FFI.moduleGetInlineAsm mod)
-
-       nmds <- do
-         ffiNamedMetadataNodes <- liftIO $ FFI.getXs (FFI.getFirstNamedMetadata mod) FFI.getNextNamedMetadata
-         forM ffiNamedMetadataNodes $ \nm -> scopeAnyCont $ do
-              n <- liftIO $ FFI.getNamedMetadataNumOperands nm
-              os <- allocaArray n
-              liftIO $ FFI.getNamedMetadataOperands nm os
-              return A.NamedMetadataDefinition
-                 `ap` (decodeM $ FFI.getNamedMetadataName nm)
-                 `ap` liftM (map (\(A.MetadataNodeReference mid) -> mid)) (decodeM (n, os))
-
-       mds <- getMetadataDefinitions
-
-       ags <- do
-         ags <- gets $ Map.toList . functionAttributeSetIDs
-         forM ags $ \(as, gid) -> return A.FunctionAttributes `ap` return gid `ap` decodeM as
-
-       cds <- gets $ map (uncurry A.COMDAT) . Map.elems . comdats
-
-       return $ tds ++ ias ++ gs ++ nmds ++ mds ++ ags ++ cds
-   )
