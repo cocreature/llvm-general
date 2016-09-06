@@ -13,7 +13,6 @@ import Data.Data
 #include "llvm-c/TargetMachine.h"
 #include "llvm-c/Linker.h"
 #include "LLVM/General/Internal/FFI/Target.h"
-#include "LLVM/General/Internal/FFI/CallingConvention.h"
 #include "LLVM/General/Internal/FFI/Module.h"
 #include "LLVM/General/Internal/FFI/LibFunc.h"
 
@@ -98,11 +97,6 @@ newtype FCmpPredicate = FCmpPredicate CUInt
 
 newtype MDKindID = MDKindID CUInt
   deriving (Storable)
-
-newtype CallingConvention = CallingConvention CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define CC_Rec(l, n) { #l, LLVM_General_CallingConvention_ ## l },
-#{inject CALLING_CONVENTION, CallingConvention, CallingConvention, callingConvention, CC_Rec}
 
 newtype RelocModel = RelocModel CUInt
   deriving (Eq, Read, Show, Typeable, Data)
