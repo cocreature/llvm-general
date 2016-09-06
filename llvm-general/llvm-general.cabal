@@ -106,7 +106,6 @@ library
     LLVM.General.Internal.BasicBlock
     LLVM.General.Internal.CallingConvention
     LLVM.General.Internal.Coding
-    LLVM.General.Internal.CommandLine
     LLVM.General.Internal.Constant
     LLVM.General.Internal.Context
     LLVM.General.Internal.DataLayout
