@@ -15,7 +15,6 @@ import Data.Data
 #include "LLVM/General/Internal/FFI/Target.h"
 #include "LLVM/General/Internal/FFI/CallingConvention.h"
 #include "LLVM/General/Internal/FFI/GlobalValue.h"
-#include "LLVM/General/Internal/FFI/Type.h"
 #include "LLVM/General/Internal/FFI/Module.h"
 #include "LLVM/General/Internal/FFI/LibFunc.h"
 
@@ -165,11 +164,6 @@ newtype TargetOptionFlag = TargetOptionFlag CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define TOF_Rec(n) { #n, LLVM_General_TargetOptionFlag_ ## n },
 #{inject TARGET_OPTION_FLAG, TargetOptionFlag, TargetOptionFlag, targetOptionFlag, TOF_Rec}
-
-newtype TypeKind = TypeKind CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define TK_Rec(n) { #n, LLVM ## n ## TypeKind },
-#{inject TYPE_KIND, TypeKind, TypeKind, typeKind, TK_Rec}
 
 #define COMMA ,
 #define IF_T(z) z
