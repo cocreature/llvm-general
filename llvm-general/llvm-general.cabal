@@ -18,8 +18,6 @@ description:
   handles almost all of the stateful complexities of using the LLVM API to build IR; and it supports moving IR not
   only from Haskell into LLVM C++ objects, but the other direction - from LLVM C++ into Haskell.
 extra-source-files:
-  src/LLVM/General/Internal/FFI/LibFunc.h
-  src/LLVM/General/Internal/FFI/Target.h
 tested-with: GHC == 7.8.4, GHC == 7.10.3, GHC == 8.0.1
 
 source-repository head
