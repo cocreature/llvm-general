@@ -96,36 +96,19 @@ library
     Control.Monad.AnyCont
     Control.Monad.AnyCont.Class
     Control.Monad.Trans.AnyCont
-    LLVM.General.Internal.Atomicity
-    LLVM.General.Internal.Attribute
-    LLVM.General.Internal.CallingConvention
     LLVM.General.Internal.Coding
-    LLVM.General.Internal.Constant
     LLVM.General.Internal.Context
     LLVM.General.Internal.DataLayout
-    LLVM.General.Internal.DecodeAST
     LLVM.General.Internal.EncodeAST
-    LLVM.General.Internal.FastMathFlags
-    LLVM.General.Internal.FloatingPointPredicate
-    LLVM.General.Internal.Function
-    LLVM.General.Internal.Global
     LLVM.General.Internal.Inject
-    LLVM.General.Internal.InlineAssembly
     LLVM.General.Internal.InstructionDefs
-    LLVM.General.Internal.IntegerPredicate
     LLVM.General.Internal.LibraryFunction
     LLVM.General.Internal.MemoryBuffer
-    LLVM.General.Internal.Metadata
     LLVM.General.Internal.Module
-    LLVM.General.Internal.Operand
     LLVM.General.Internal.PassManager
     LLVM.General.Internal.RawOStream
-    LLVM.General.Internal.RMWOperation
     LLVM.General.Internal.String
-    LLVM.General.Internal.TailCallKind
     LLVM.General.Internal.Target
-    LLVM.General.Internal.Type
-    LLVM.General.Internal.Value
     LLVM.General.Internal.FFI.Attribute
     LLVM.General.Internal.FFI.Assembly
     LLVM.General.Internal.FFI.BinaryOperator
