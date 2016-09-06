@@ -72,17 +72,7 @@ createPassManager :: PassSetSpec -> IO (Ptr FFI.PassManager)
 createPassManager pss = flip runAnyContT return $ do
   pm <- liftIO $ FFI.createPassManager
   case pss of
-    s@CuratedPassSetSpec {} -> liftIO $ do
-      bracket FFI.passManagerBuilderCreate FFI.passManagerBuilderDispose $ \b -> do
-        let handleOption g m = forM_ (m s) (g b <=< encodeM) 
-        handleOption FFI.passManagerBuilderSetOptLevel optLevel
-        handleOption FFI.passManagerBuilderSetSizeLevel sizeLevel
-        handleOption FFI.passManagerBuilderSetDisableUnitAtATime (liftM not . unitAtATime)
-        handleOption FFI.passManagerBuilderSetDisableSimplifyLibCalls (liftM not . simplifyLibCalls)
-        handleOption FFI.passManagerBuilderUseInlinerWithThreshold useInlinerWithThreshold
-        handleOption FFI.passManagerBuilderSetLoopVectorize loopVectorize
-        handleOption FFI.passManagerBuilderSetSuperwordLevelParallelismVectorize superwordLevelParallelismVectorize
-        FFI.passManagerBuilderPopulateModulePassManager b pm
+    s@CuratedPassSetSpec {} -> undefined
     PassSetSpec ps -> do
       forM_ ps $ \p -> $(
         do
