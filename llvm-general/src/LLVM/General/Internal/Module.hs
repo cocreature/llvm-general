@@ -59,7 +59,6 @@ import LLVM.General.Internal.Type
 import LLVM.General.Internal.Value
 
 import LLVM.General.DataLayout
-import LLVM.General.Diagnostic
 
 import qualified LLVM.General.AST as A
 import qualified LLVM.General.AST.DataLayout as A
@@ -72,9 +71,6 @@ newtype Module = Module (Ptr FFI.Module)
 -- | A newtype to distinguish strings used for paths from other strings
 newtype File = File FilePath
   deriving (Eq, Ord, Read, Show)
-
-instance Inject String (Either String Diagnostic) where
-    inject = Left
 
 genCodingInstance [t| Bool |] ''FFI.LinkerMode [
   (FFI.linkerModeDestroySource, False)
