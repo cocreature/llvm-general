@@ -14,11 +14,11 @@ data DataLayout
 -- Oooh those wacky LLVM C-API coders: C API called DataLayout TargetData.
 -- Great. Just great.
 
-foreign import ccall unsafe "LLVMCreateTargetData" createDataLayout :: 
-  CString -> IO (Ptr DataLayout)
+createDataLayout :: CString -> IO (Ptr DataLayout)
+createDataLayout = undefined
 
-foreign import ccall unsafe "LLVMDisposeTargetData" disposeDataLayout :: 
-  Ptr DataLayout -> IO ()
+disposeDataLayout :: Ptr DataLayout -> IO ()
+disposeDataLayout = undefined
 
-foreign import ccall unsafe "LLVMCopyStringRepOfTargetData" dataLayoutToString ::
-  Ptr DataLayout -> IO (OwnerTransfered CString)
+dataLayoutToString :: Ptr DataLayout -> IO (OwnerTransfered CString)
+dataLayoutToString = undefined

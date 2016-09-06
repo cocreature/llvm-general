@@ -110,7 +110,6 @@ library
   include-dirs: src
   c-sources:
     src/LLVM/General/Internal/FFI/ModuleC.cpp
-    src/LLVM/General/Internal/FFI/RawOStreamC.cpp
     src/LLVM/General/Internal/FFI/PassManagerC.cpp
     src/LLVM/General/Internal/FFI/TargetC.cpp
 
