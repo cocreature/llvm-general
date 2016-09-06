@@ -86,11 +86,9 @@ library
     StandaloneDeriving
     ConstraintKinds
   exposed-modules:
-    LLVM.General
     LLVM.General.CodeGenOpt
     LLVM.General.CodeModel
     LLVM.General.Diagnostic
-    LLVM.General.Module
     LLVM.General.Relocation
     LLVM.General.Target.LibraryFunction
     LLVM.General.Target.Options
