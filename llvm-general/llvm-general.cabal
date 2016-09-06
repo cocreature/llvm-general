@@ -93,7 +93,6 @@ library
     LLVM.General.Diagnostic
     LLVM.General.Module
     LLVM.General.Relocation
-    LLVM.General.Target
     LLVM.General.Target.LibraryFunction
     LLVM.General.Target.Options
     LLVM.General.Transforms
