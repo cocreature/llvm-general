@@ -5,8 +5,6 @@ module LLVM.General.Internal.FFI.RawOStream where
 
 import Foreign.Ptr
 import Foreign.C
-import Control.Exception (bracket)
-
 import LLVM.General.Internal.FFI.LLVMCTypes
 
 data RawOStream

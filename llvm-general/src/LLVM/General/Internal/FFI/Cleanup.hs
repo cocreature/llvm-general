@@ -14,7 +14,6 @@ import Foreign.C
 import Foreign.Ptr
 
 import LLVM.General.Internal.FFI.LLVMCTypes
-import qualified LLVM.General.Internal.FFI.PtrHierarchy as FFI
 
 foreignDecl :: String -> String -> [TypeQ] -> TypeQ -> DecsQ
 foreignDecl cName hName argTypeQs returnTypeQ = do

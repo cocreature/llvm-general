@@ -8,8 +8,6 @@ import Foreign.Ptr
 import Foreign.C
 
 import LLVM.General.Internal.FFI.LLVMCTypes
-import LLVM.General.Internal.FFI.Module
-import LLVM.General.Internal.FFI.RawOStream
 
 data Target
 

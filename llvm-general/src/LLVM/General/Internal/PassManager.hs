@@ -16,7 +16,6 @@ import Foreign.C (CString)
 import Foreign.Ptr
 
 import qualified LLVM.General.Internal.FFI.PassManager as FFI
-import qualified LLVM.General.Internal.FFI.Transforms as FFI
 
 import LLVM.General.Internal.Module
 import LLVM.General.Internal.Coding

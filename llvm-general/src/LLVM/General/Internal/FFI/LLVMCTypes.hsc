@@ -97,51 +97,10 @@ newtype FCmpPredicate = FCmpPredicate CUInt
 newtype MDKindID = MDKindID CUInt
   deriving (Storable)
 
-newtype RelocModel = RelocModel CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define RM_Rec(n,m) { #n, LLVMReloc ## n },
-#{inject RELOC_MODEL, RelocModel, RelocModel, relocModel, RM_Rec}
-
-newtype CodeModel = CodeModel CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define CM_Rec(n) { #n, LLVMCodeModel ## n },
-#{inject CODE_MODEL, CodeModel, CodeModel, codeModel, CM_Rec}
-
-newtype CodeGenOptLevel = CodeGenOptLevel CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define CGOL_Rec(n) { #n, LLVMCodeGenLevel ## n },
-#{inject CODE_GEN_OPT_LEVEL, CodeGenOptLevel, CodeGenOptLevel, codeGenOptLevel, CGOL_Rec}
-
-newtype CodeGenFileType = CodeGenFileType CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define CGFT_Rec(n) { #n, LLVM ## n ## File },
-#{inject CODE_GEN_FILE_TYPE, CodeGenFileType, CodeGenFileType, codeGenFileType, CGFT_Rec}
-
 newtype FloatABIType = FloatABIType CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define FAT_Rec(n) { #n, LLVM_General_FloatABI_ ## n },
 #{inject FLOAT_ABI, FloatABIType, FloatABIType, floatABI, FAT_Rec}
-
-newtype FPOpFusionMode = FPOpFusionMode CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define FPOFM_Rec(n) { #n, LLVM_General_FPOpFusionMode_ ## n },
-#{inject FP_OP_FUSION_MODE, FPOpFusionMode, FPOpFusionMode, fpOpFusionMode, FPOFM_Rec}
-
-newtype TargetOptionFlag = TargetOptionFlag CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define TOF_Rec(n) { #n, LLVM_General_TargetOptionFlag_ ## n },
-#{inject TARGET_OPTION_FLAG, TargetOptionFlag, TargetOptionFlag, targetOptionFlag, TOF_Rec}
-
-#define COMMA ,
-#define IF_T(z) z
-#define IF_F(z)
-#define IF2(x) IF_ ## x
-#define IF(x) IF2(x)
-#define OR_TT T
-#define OR_TF T
-#define OR_FT T
-#define OR_FF F  
-#define OR(x,y) OR_ ## x ## y
 
 newtype LibFunc = LibFunc CUInt
   deriving (Eq, Read, Show, Bits, Typeable, Data, Num, Storable)

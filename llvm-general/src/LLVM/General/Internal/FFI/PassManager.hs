@@ -13,7 +13,6 @@ import Foreign.C
 
 import Control.Monad
 import LLVM.General.Internal.FFI.LLVMCTypes
-import LLVM.General.Internal.FFI.PtrHierarchy
 import LLVM.General.Internal.FFI.Cleanup
 import LLVM.General.Internal.FFI.Module
 import LLVM.General.Internal.FFI.Target
