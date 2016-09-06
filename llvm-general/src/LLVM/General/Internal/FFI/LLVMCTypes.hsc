@@ -13,7 +13,6 @@ import Data.Data
 #include "llvm-c/TargetMachine.h"
 #include "llvm-c/Linker.h"
 #include "LLVM/General/Internal/FFI/Target.h"
-#include "LLVM/General/Internal/FFI/Module.h"
 #include "LLVM/General/Internal/FFI/LibFunc.h"
 
 import Language.Haskell.TH.Quote
@@ -143,11 +142,6 @@ newtype TargetOptionFlag = TargetOptionFlag CUInt
 #define OR_FT T
 #define OR_FF F  
 #define OR(x,y) OR_ ## x ## y
-
-newtype LinkerMode = LinkerMode CUInt
-  deriving (Eq, Read, Show, Bits, Typeable, Data, Num)
-#define LM_Rec(n) { #n, LLVMLinker ## n },
-#{inject LINKER_MODE, LinkerMode, LinkerMode, linkerMode, LM_Rec}
 
 newtype LibFunc = LibFunc CUInt
   deriving (Eq, Read, Show, Bits, Typeable, Data, Num, Storable)

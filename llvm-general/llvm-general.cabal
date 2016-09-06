@@ -19,7 +19,6 @@ description:
   only from Haskell into LLVM C++ objects, but the other direction - from LLVM C++ into Haskell.
 extra-source-files:
   src/LLVM/General/Internal/FFI/LibFunc.h
-  src/LLVM/General/Internal/FFI/Module.h
   src/LLVM/General/Internal/FFI/Target.h
 tested-with: GHC == 7.8.4, GHC == 7.10.3, GHC == 8.0.1
 
@@ -106,7 +105,6 @@ library
 
   include-dirs: src
   c-sources:
-    src/LLVM/General/Internal/FFI/ModuleC.cpp
     src/LLVM/General/Internal/FFI/PassManagerC.cpp
     src/LLVM/General/Internal/FFI/TargetC.cpp
 
