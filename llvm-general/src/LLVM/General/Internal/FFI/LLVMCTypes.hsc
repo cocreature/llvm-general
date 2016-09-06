@@ -22,7 +22,6 @@ import LLVM.General.Prelude
 #include "LLVM/General/Internal/FFI/GlobalValue.h"
 #include "LLVM/General/Internal/FFI/Type.h"
 #include "LLVM/General/Internal/FFI/Constant.h"
-#include "LLVM/General/Internal/FFI/Analysis.h"
 #include "LLVM/General/Internal/FFI/Module.h"
 #include "LLVM/General/Internal/FFI/LibFunc.h"
 
@@ -242,11 +241,6 @@ newtype FloatSemantics = FloatSemantics CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define FS_Rec(n) { #n, LLVMFloatSemantics ## n },
 #{inject FLOAT_SEMANTICS, FloatSemantics, FloatSemantics, floatSemantics, FS_Rec}
-
-newtype VerifierFailureAction = VerifierFailureAction CUInt
-  deriving (Eq, Read, Show, Bits, Typeable, Data, Num)
-#define VFA_Rec(n) { #n, LLVM ## n ## Action },
-#{inject VERIFIER_FAILURE_ACTION, VerifierFailureAction, VerifierFailureAction, verifierFailureAction, VFA_Rec}
 
 newtype LinkerMode = LinkerMode CUInt
   deriving (Eq, Read, Show, Bits, Typeable, Data, Num)
