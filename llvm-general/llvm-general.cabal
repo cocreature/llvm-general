@@ -80,7 +80,6 @@ library
     LLVM.General.Internal.MemoryBuffer
     LLVM.General.Internal.Module
     LLVM.General.Internal.PassManager
-    LLVM.General.Internal.RawOStream
     LLVM.General.Internal.String
     LLVM.General.Internal.Target
     LLVM.General.Internal.FFI.Cleanup
