@@ -139,11 +139,9 @@ library
     LLVM.General.Internal.FFI.Builder
     LLVM.General.Internal.FFI.ByteRangeCallback
     LLVM.General.Internal.FFI.Cleanup
-    LLVM.General.Internal.FFI.CommandLine
     LLVM.General.Internal.FFI.Constant
     LLVM.General.Internal.FFI.Context
     LLVM.General.Internal.FFI.DataLayout
-    LLVM.General.Internal.FFI.ExecutionEngine
     LLVM.General.Internal.FFI.Function
     LLVM.General.Internal.FFI.GlobalAlias
     LLVM.General.Internal.FFI.GlobalValue
@@ -161,7 +159,6 @@ library
     LLVM.General.Internal.FFI.RawOStream
     LLVM.General.Internal.FFI.SMDiagnostic
     LLVM.General.Internal.FFI.Target
-    LLVM.General.Internal.FFI.Threading
     LLVM.General.Internal.FFI.Transforms
     LLVM.General.Internal.FFI.Type
     LLVM.General.Internal.FFI.User
@@ -174,8 +171,6 @@ library
     src/LLVM/General/Internal/FFI/BitcodeC.cpp
     src/LLVM/General/Internal/FFI/BuilderC.cpp
     src/LLVM/General/Internal/FFI/ConstantC.cpp
-    src/LLVM/General/Internal/FFI/CommandLineC.cpp
-    src/LLVM/General/Internal/FFI/ExecutionEngineC.cpp
     src/LLVM/General/Internal/FFI/FunctionC.cpp
     src/LLVM/General/Internal/FFI/GlobalAliasC.cpp
     src/LLVM/General/Internal/FFI/GlobalValueC.cpp
