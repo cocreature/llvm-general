@@ -98,7 +98,6 @@ library
     Control.Monad.Trans.AnyCont
     LLVM.General.Internal.Atomicity
     LLVM.General.Internal.Attribute
-    LLVM.General.Internal.BasicBlock
     LLVM.General.Internal.CallingConvention
     LLVM.General.Internal.Coding
     LLVM.General.Internal.Constant
@@ -130,7 +129,6 @@ library
     LLVM.General.Internal.Value
     LLVM.General.Internal.FFI.Attribute
     LLVM.General.Internal.FFI.Assembly
-    LLVM.General.Internal.FFI.BasicBlock
     LLVM.General.Internal.FFI.BinaryOperator
     LLVM.General.Internal.FFI.Bitcode
     LLVM.General.Internal.FFI.Builder

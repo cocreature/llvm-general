@@ -31,7 +31,6 @@ import qualified LLVM.General.Internal.FFI.Value as FFI
 import qualified LLVM.General.Internal.FFI.User as FFI
 import qualified LLVM.General.Internal.FFI.Builder as FFI
 import qualified LLVM.General.Internal.FFI.Constant as FFI
-import qualified LLVM.General.Internal.FFI.BasicBlock as FFI
 
 import LLVM.General.Internal.Atomicity ()
 import LLVM.General.Internal.Attribute
@@ -75,84 +74,7 @@ instance DecodeM DecodeAST A.Terminator (Ptr FFI.Instruction) where
     n <- liftIO $ FFI.getInstructionDefOpcode i
     nOps <- liftIO $ FFI.getNumOperands (FFI.upCast i)
     md <- meta i
-    let op n = decodeM =<< (liftIO $ FFI.getOperand (FFI.upCast i) n)
-        successor n = decodeM =<< (liftIO $ FFI.isABasicBlock =<< FFI.getOperand (FFI.upCast i) n)
-    case n of
-      [instrP|Ret|] -> do
-        returnOperand' <- if nOps == 0 then return Nothing else Just <$> op 0
-        return $ A.Ret { A.returnOperand = returnOperand', A.metadata' = md }
-      [instrP|Br|] -> do
-        n <- liftIO $ FFI.getNumOperands (FFI.upCast i)
-        case n of
-          1 -> do
-             dest <- successor 0
-             return $ A.Br { A.dest = dest, A.metadata' = md }
-          3 -> do
-             condition <- op 0
-             falseDest <- successor 1
-             trueDest <- successor 2
-             return $ A.CondBr {
-               A.condition = condition,
-               A.falseDest = falseDest, 
-               A.trueDest = trueDest,
-               A.metadata' = md
-             }
-      [instrP|Switch|] -> do
-        op0 <- op 0
-        dd <- successor 1
-        let nCases = (nOps - 2) `div` 2
-        values <- allocaArray nCases
-        dests <- allocaArray nCases
-        liftIO $ FFI.getSwitchCases i values dests
-        cases <- return zip `ap` peekArray nCases values `ap` peekArray nCases dests
-        dests <- forM cases $ \(c, d) -> return (,) `ap` decodeM c `ap` decodeM d
-        return A.Switch {
-          A.operand0' = op0,
-          A.defaultDest = dd,
-          A.dests = dests,
-          A.metadata' = md
-        }
-      [instrP|IndirectBr|] -> do
-        op0 <- op 0
-        let nDests = nOps - 1
-        dests <- allocaArray nDests
-        liftIO $ FFI.getIndirectBrDests i dests
-        dests <- decodeM (nDests, dests)
-        return A.IndirectBr {
-           A.operand0' = op0,
-           A.possibleDests = dests,
-           A.metadata' = md
-        }
-      [instrP|Invoke|] -> do
-        cc <- decodeM =<< liftIO (FFI.getCallSiteCallingConvention i)
-        attrs <- callInstAttributeSet i
-        fv <- liftIO $ FFI.getCallSiteCalledValue i
-        f <- decodeM fv
-        args <- forM [1..nOps-3] $ \j -> do
-                  let pAttrs = Map.findWithDefault [] (j-1) (parameterAttributes attrs)
-                  return (, pAttrs) `ap` op (j-1) 
-        rd <- successor (nOps - 2)
-        ed <- successor (nOps - 1)
-        return A.Invoke {
-          A.callingConvention' = cc,
-          A.returnAttributes' = returnAttributes attrs,
-          A.function' = f,
-          A.arguments' = args,
-          A.functionAttributes' = functionAttributes attrs,
-          A.returnDest = rd,
-          A.exceptionDest = ed,
-          A.metadata' = md
-        }
-      [instrP|Resume|] -> do
-        op0 <- op 0
-        return A.Resume {
-          A.operand0' = op0,
-          A.metadata' = md
-        }
-      [instrP|Unreachable|] -> do
-        return A.Unreachable {
-          A.metadata' = md
-        }
+    undefined
 
 instance EncodeM EncodeAST A.Terminator (Ptr FFI.Instruction) where
   encodeM t = scopeAnyCont $ do
