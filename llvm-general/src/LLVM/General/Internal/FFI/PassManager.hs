@@ -33,18 +33,6 @@ foreign import ccall unsafe "LLVMDisposePassManager" disposePassManager ::
 foreign import ccall unsafe "LLVMRunPassManager" runPassManager ::
   Ptr PassManager -> Ptr Module -> IO CUInt
 
-foreign import ccall unsafe "LLVMCreateFunctionPassManagerForModule" createFunctionPassManagerForModule ::
-  Ptr Module -> IO (Ptr PassManager)
-
-foreign import ccall unsafe "LLVMInitializeFunctionPassManager" initializeFunctionPassManager ::
-  Ptr PassManager -> IO CUInt
-
-foreign import ccall unsafe "LLVMRunFunctionPassManager" runFunctionPassManager ::
-  Ptr PassManager -> Ptr Value -> IO CUInt
-
-foreign import ccall unsafe "LLVMFinalizeFunctionPassManager" finalizeFunctionPassManager ::
-  Ptr PassManager -> IO CUInt
-
 foreign import ccall unsafe "LLVMAddTargetData" addDataLayoutPass' ::
   Ptr DataLayout -> Ptr PassManager -> IO ()
 
