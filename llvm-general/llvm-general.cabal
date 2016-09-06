@@ -116,7 +116,6 @@ library
     LLVM.General.Internal.DecodeAST
     LLVM.General.Internal.Diagnostic
     LLVM.General.Internal.EncodeAST
-    LLVM.General.Internal.ExecutionEngine
     LLVM.General.Internal.FastMathFlags
     LLVM.General.Internal.FloatingPointPredicate
     LLVM.General.Internal.Function
