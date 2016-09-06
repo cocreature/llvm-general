@@ -12,7 +12,6 @@ import LLVM.General.Prelude
 #include "llvm-c/Target.h"
 #include "llvm-c/TargetMachine.h"
 #include "llvm-c/Linker.h"
-#include "LLVM/General/Internal/FFI/SMDiagnostic.h"
 #include "LLVM/General/Internal/FFI/Target.h"
 #include "LLVM/General/Internal/FFI/CallingConvention.h"
 #include "LLVM/General/Internal/FFI/GlobalValue.h"
@@ -131,11 +130,6 @@ newtype ThreadLocalMode = ThreadLocalMode CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define TLS_Rec(n) { #n, LLVM ## n },
 #{inject THREAD_LOCAL_MODE, ThreadLocalMode, ThreadLocalMode, threadLocalMode, TLS_Rec}
-
-newtype DiagnosticKind = DiagnosticKind CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define DK_Rec(n) { #n, LLVMDiagnosticKind ## n },
-#{inject DIAGNOSTIC_KIND, DiagnosticKind, DiagnosticKind, diagnosticKind, DK_Rec}
 
 newtype RelocModel = RelocModel CUInt
   deriving (Eq, Read, Show, Typeable, Data)

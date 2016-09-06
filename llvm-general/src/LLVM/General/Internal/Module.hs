@@ -20,7 +20,6 @@ import Foreign.C
 import Data.IORef
 import qualified Data.ByteString as BS
 
-import qualified LLVM.General.Internal.FFI.Assembly as FFI
 import qualified LLVM.General.Internal.FFI.Bitcode as FFI
 import qualified LLVM.General.Internal.FFI.LLVMCTypes as FFI
 import qualified LLVM.General.Internal.FFI.MemoryBuffer as FFI
@@ -86,27 +85,8 @@ withModuleFromLLVMAssembly :: LLVMAssemblyInput s
                               => Context -> s -> (Module -> IO a) -> ExceptT String IO a
 withModuleFromLLVMAssembly (Context c) s f = flip runAnyContT return $ do
   mb <- llvmAssemblyMemoryBuffer s
-  msgPtr <- alloca
-  m <- anyContToM $ bracket (FFI.parseLLVMAssembly c mb msgPtr) FFI.disposeModule
-  when (m == nullPtr) $ throwError =<< decodeM msgPtr
+  m <- anyContToM $ bracket undefined FFI.disposeModule
   liftIO $ f (Module m)
-
--- | generate LLVM assembly from a 'Module'
-moduleLLVMAssembly :: Module -> IO String
-moduleLLVMAssembly (Module m) = do
-  resultRef <- newIORef Nothing
-  let saveBuffer :: Ptr CChar -> CSize -> IO ()
-      saveBuffer start size = do
-        r <- decodeM (start, fromIntegral size)
-        writeIORef resultRef (Just r)
-  FFI.withBufferRawOStream saveBuffer $ FFI.writeLLVMAssembly m
-  Just s <- readIORef resultRef
-  return s
-
--- | write LLVM assembly for a 'Module' to a file
-writeLLVMAssemblyToFile :: File -> Module -> ExceptT String IO ()
-writeLLVMAssemblyToFile (File path) (Module m) = flip runAnyContT return $ do
-  withFileRawOStream path False True $ liftIO . FFI.writeLLVMAssembly m
 
 class BitcodeInput b where
   bitcodeMemoryBuffer :: (Inject String e, MonadError e m, MonadIO m, MonadAnyCont IO m)
