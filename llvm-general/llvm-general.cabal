@@ -107,7 +107,6 @@ library
     LLVM.General.Internal.Context
     LLVM.General.Internal.DataLayout
     LLVM.General.Internal.DecodeAST
-    LLVM.General.Internal.Diagnostic
     LLVM.General.Internal.EncodeAST
     LLVM.General.Internal.FastMathFlags
     LLVM.General.Internal.FloatingPointPredicate
