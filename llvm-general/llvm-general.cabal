@@ -100,7 +100,7 @@ library
   include-dirs: src
   c-sources:
     src/LLVM/General/Internal/FFI/PassManagerC.c
-    src/LLVM/General/Internal/FFI/TargetC.cpp
+    src/LLVM/General/Internal/FFI/TargetC.c
 
   if flag(debug)
     cc-options: -g
