@@ -40,7 +40,6 @@ import qualified LLVM.General.Internal.FFI.Target as FFI
 import qualified LLVM.General.Internal.FFI.Value as FFI
 
 import LLVM.General.Internal.Attribute
-import LLVM.General.Internal.BasicBlock  
 import LLVM.General.Internal.Coding
 import LLVM.General.Internal.Context
 import LLVM.General.Internal.DecodeAST
@@ -403,30 +402,7 @@ moduleAST (Module mod) = runDecodeAST $ do
               n <- getGlobalName f
               MixedAttributeSet fAttrs rAttrs pAttrs <- getMixedAttributeSet f
               parameters <- getParameters f pAttrs
-              decodeBlocks <- do
-                ffiBasicBlocks <- liftIO $ FFI.getXs (FFI.getFirstBasicBlock f) FFI.getNextBasicBlock
-                liftM sequence . forM ffiBasicBlocks $ \b -> do
-                  n <- getLocalName b
-                  decodeInstructions <- getNamedInstructions b
-                  decodeTerminator <- getBasicBlockTerminator b
-                  return $ return A.BasicBlock `ap` return n `ap` decodeInstructions `ap` decodeTerminator
-              return $ return A.Function
-                 `ap` getLinkage f
-                 `ap` getVisibility f
-                 `ap` getDLLStorageClass f
-                 `ap` (liftIO $ decodeM =<< FFI.getFunctionCallingConvention f)
-                 `ap` return rAttrs
-                 `ap` return returnType
-                 `ap` return n
-                 `ap` return (parameters, isVarArg)
-                 `ap` return fAttrs
-                 `ap` getSection f
-                 `ap` getCOMDATName f
-                 `ap` getAlignment f
-                 `ap` getGC f
-                 `ap` getPrefixData f
-                 `ap` decodeBlocks
-                 `ap` getPersonalityFn f
+              undefined
         ]
 
        tds <- getStructDefinitions
