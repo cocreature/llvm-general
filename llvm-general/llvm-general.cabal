@@ -87,7 +87,6 @@ library
     ConstraintKinds
   exposed-modules:
     LLVM.General
-    LLVM.General.Analysis
     LLVM.General.CodeGenOpt
     LLVM.General.CodeModel
     LLVM.General.Context
@@ -103,7 +102,6 @@ library
     Control.Monad.AnyCont
     Control.Monad.AnyCont.Class
     Control.Monad.Trans.AnyCont
-    LLVM.General.Internal.Analysis
     LLVM.General.Internal.Atomicity
     LLVM.General.Internal.Attribute
     LLVM.General.Internal.BasicBlock
