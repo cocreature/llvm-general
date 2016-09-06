@@ -20,13 +20,9 @@ description:
 extra-source-files:
   src/LLVM/General/Internal/FFI/Attribute.h
   src/LLVM/General/Internal/FFI/AttributeC.hpp
-  src/LLVM/General/Internal/FFI/BinaryOperator.h
   src/LLVM/General/Internal/FFI/CallingConvention.h
   src/LLVM/General/Internal/FFI/CallingConventionC.hpp
-  src/LLVM/General/Internal/FFI/Constant.h
   src/LLVM/General/Internal/FFI/GlobalValue.h
-  src/LLVM/General/Internal/FFI/InlineAssembly.h
-  src/LLVM/General/Internal/FFI/Instruction.h
   src/LLVM/General/Internal/FFI/LibFunc.h
   src/LLVM/General/Internal/FFI/Module.h
   src/LLVM/General/Internal/FFI/SMDiagnostic.h
@@ -111,25 +107,17 @@ library
     LLVM.General.Internal.Target
     LLVM.General.Internal.FFI.Attribute
     LLVM.General.Internal.FFI.Assembly
-    LLVM.General.Internal.FFI.BinaryOperator
     LLVM.General.Internal.FFI.Bitcode
     LLVM.General.Internal.FFI.Builder
     LLVM.General.Internal.FFI.ByteRangeCallback
     LLVM.General.Internal.FFI.Cleanup
-    LLVM.General.Internal.FFI.Constant
     LLVM.General.Internal.FFI.Context
     LLVM.General.Internal.FFI.DataLayout
-    LLVM.General.Internal.FFI.Function
-    LLVM.General.Internal.FFI.GlobalAlias
     LLVM.General.Internal.FFI.GlobalValue
-    LLVM.General.Internal.FFI.GlobalVariable
-    LLVM.General.Internal.FFI.InlineAssembly
-    LLVM.General.Internal.FFI.Instruction
     LLVM.General.Internal.FFI.InstructionDefs
     LLVM.General.Internal.FFI.Iterate
     LLVM.General.Internal.FFI.LLVMCTypes
     LLVM.General.Internal.FFI.MemoryBuffer
-    LLVM.General.Internal.FFI.Metadata
     LLVM.General.Internal.FFI.Module
     LLVM.General.Internal.FFI.PassManager
     LLVM.General.Internal.FFI.PtrHierarchy
@@ -138,7 +126,6 @@ library
     LLVM.General.Internal.FFI.Target
     LLVM.General.Internal.FFI.Transforms
     LLVM.General.Internal.FFI.Type
-    LLVM.General.Internal.FFI.User
     LLVM.General.Internal.FFI.Value
 
   include-dirs: src
@@ -147,13 +134,7 @@ library
     src/LLVM/General/Internal/FFI/AttributeC.cpp
     src/LLVM/General/Internal/FFI/BitcodeC.cpp
     src/LLVM/General/Internal/FFI/BuilderC.cpp
-    src/LLVM/General/Internal/FFI/ConstantC.cpp
-    src/LLVM/General/Internal/FFI/FunctionC.cpp
-    src/LLVM/General/Internal/FFI/GlobalAliasC.cpp
     src/LLVM/General/Internal/FFI/GlobalValueC.cpp
-    src/LLVM/General/Internal/FFI/InlineAssemblyC.cpp
-    src/LLVM/General/Internal/FFI/InstructionC.cpp
-    src/LLVM/General/Internal/FFI/MetadataC.cpp
     src/LLVM/General/Internal/FFI/ModuleC.cpp
     src/LLVM/General/Internal/FFI/RawOStreamC.cpp
     src/LLVM/General/Internal/FFI/PassManagerC.cpp
