@@ -14,7 +14,6 @@ import Data.Data
 #include "llvm-c/Linker.h"
 #include "LLVM/General/Internal/FFI/Target.h"
 #include "LLVM/General/Internal/FFI/CallingConvention.h"
-#include "LLVM/General/Internal/FFI/GlobalValue.h"
 #include "LLVM/General/Internal/FFI/Module.h"
 #include "LLVM/General/Internal/FFI/LibFunc.h"
 
@@ -100,35 +99,10 @@ newtype FCmpPredicate = FCmpPredicate CUInt
 newtype MDKindID = MDKindID CUInt
   deriving (Storable)
 
-newtype Linkage = Linkage CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define LK_Rec(n) { #n, LLVM ## n ## Linkage },
-#{inject LINKAGE, Linkage, Linkage, linkage, LK_Rec}
-
-newtype Visibility = Visibility CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define VIS_Rec(n) { #n, LLVM ## n ## Visibility },
-#{inject VISIBILITY, Visibility, Visibility, visibility, VIS_Rec}
-
-newtype COMDATSelectionKind = COMDATSelectionKind CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define CSK(n) { #n, LLVM_General_COMDAT_Selection_Kind_ ## n },
-#{inject COMDAT_SELECTION_KIND, COMDATSelectionKind, COMDATSelectionKind, comdatSelectionKind, CSK}
-
-newtype DLLStorageClass = DLLStorageClass CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define DLLSC_Rec(n) { #n, LLVM ## n ## StorageClass },
-#{inject DLL_STORAGE_CLASS, DLLStorageClass, DLLStorageClass, dllStorageClass, DLLSC_Rec}
-
 newtype CallingConvention = CallingConvention CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define CC_Rec(l, n) { #l, LLVM_General_CallingConvention_ ## l },
 #{inject CALLING_CONVENTION, CallingConvention, CallingConvention, callingConvention, CC_Rec}
-
-newtype ThreadLocalMode = ThreadLocalMode CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define TLS_Rec(n) { #n, LLVM ## n },
-#{inject THREAD_LOCAL_MODE, ThreadLocalMode, ThreadLocalMode, threadLocalMode, TLS_Rec}
 
 newtype RelocModel = RelocModel CUInt
   deriving (Eq, Read, Show, Typeable, Data)

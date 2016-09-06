@@ -20,7 +20,6 @@ description:
 extra-source-files:
   src/LLVM/General/Internal/FFI/CallingConvention.h
   src/LLVM/General/Internal/FFI/CallingConventionC.hpp
-  src/LLVM/General/Internal/FFI/GlobalValue.h
   src/LLVM/General/Internal/FFI/LibFunc.h
   src/LLVM/General/Internal/FFI/Module.h
   src/LLVM/General/Internal/FFI/Target.h
@@ -100,7 +99,6 @@ library
     LLVM.General.Internal.FFI.Cleanup
     LLVM.General.Internal.FFI.Context
     LLVM.General.Internal.FFI.DataLayout
-    LLVM.General.Internal.FFI.GlobalValue
     LLVM.General.Internal.FFI.LLVMCTypes
     LLVM.General.Internal.FFI.MemoryBuffer
     LLVM.General.Internal.FFI.Module
@@ -113,7 +111,6 @@ library
   include-dirs: src
   c-sources:
     src/LLVM/General/Internal/FFI/BitcodeC.cpp
-    src/LLVM/General/Internal/FFI/GlobalValueC.cpp
     src/LLVM/General/Internal/FFI/ModuleC.cpp
     src/LLVM/General/Internal/FFI/RawOStreamC.cpp
     src/LLVM/General/Internal/FFI/PassManagerC.cpp
