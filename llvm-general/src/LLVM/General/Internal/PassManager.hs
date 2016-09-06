@@ -5,10 +5,8 @@
   #-}
 module LLVM.General.Internal.PassManager where
 
-import LLVM.General.Prelude
-
 import qualified Language.Haskell.TH as TH
-
+import Control.Monad
 import Control.Exception
 import Control.Monad.IO.Class
 
@@ -22,10 +20,7 @@ import qualified LLVM.General.Internal.FFI.Transforms as FFI
 
 import LLVM.General.Internal.Module
 import LLVM.General.Internal.Coding
-import LLVM.General.Internal.DataLayout
 import LLVM.General.Transforms
-
-import LLVM.General.AST.DataLayout
 
 -- | <http://llvm.org/doxygen/classllvm_1_1PassManager.html>
 -- Note: a PassManager does substantive behind-the-scenes work, arranging for the
@@ -39,8 +34,7 @@ data PassSetSpec
   -- allows fine-grained control of what passes are to be run when, and the specification
   -- of passes not available through 'CuratedPassSetSpec'.
   = PassSetSpec {
-      transforms :: [Pass],
-      dataLayout :: Maybe DataLayout
+      transforms :: [Pass]
     }
   -- | This type is a high-level specification of a set of passes. It uses the same
   -- collection of passes chosen by the LLVM team in the command line tool 'opt'.  The fields
@@ -52,8 +46,7 @@ data PassSetSpec
       simplifyLibCalls :: Maybe Bool,
       loopVectorize :: Maybe Bool,
       superwordLevelParallelismVectorize :: Maybe Bool,
-      useInlinerWithThreshold :: Maybe Word,
-      dataLayout :: Maybe DataLayout
+      useInlinerWithThreshold :: Maybe Word
     }
 
 -- | Helper to make a curated 'PassSetSpec'
@@ -64,14 +57,12 @@ defaultCuratedPassSetSpec = CuratedPassSetSpec {
   simplifyLibCalls = Nothing,
   loopVectorize = Nothing,
   superwordLevelParallelismVectorize = Nothing,
-  useInlinerWithThreshold = Nothing,
-  dataLayout = Nothing
+  useInlinerWithThreshold = Nothing
 }
 
 -- | an empty 'PassSetSpec'
 defaultPassSetSpec = PassSetSpec {
-  transforms = [],
-  dataLayout = Nothing
+  transforms = []
 }
 
 instance (Monad m, MonadAnyCont IO m) => EncodeM m GCOVVersion CString where
@@ -80,7 +71,6 @@ instance (Monad m, MonadAnyCont IO m) => EncodeM m GCOVVersion CString where
 createPassManager :: PassSetSpec -> IO (Ptr FFI.PassManager)
 createPassManager pss = flip runAnyContT return $ do
   pm <- liftIO $ FFI.createPassManager
-  forM_ (dataLayout pss) $ \dl -> liftIO $ withFFIDataLayout dl $ FFI.addDataLayoutPass pm
   case pss of
     s@CuratedPassSetSpec {} -> liftIO $ do
       bracket FFI.passManagerBuilderCreate FFI.passManagerBuilderDispose $ \b -> do
@@ -93,7 +83,7 @@ createPassManager pss = flip runAnyContT return $ do
         handleOption FFI.passManagerBuilderSetLoopVectorize loopVectorize
         handleOption FFI.passManagerBuilderSetSuperwordLevelParallelismVectorize superwordLevelParallelismVectorize
         FFI.passManagerBuilderPopulateModulePassManager b pm
-    PassSetSpec ps dl -> do
+    PassSetSpec ps -> do
       forM_ ps $ \p -> $(
         do
 #if __GLASGOW_HASKELL__ < 800

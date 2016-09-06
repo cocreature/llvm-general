@@ -5,8 +5,6 @@
 -- | Functions to read and write LLVM bitcode
 module LLVM.General.Internal.FFI.Bitcode where
 
-import LLVM.General.Prelude
-
 import LLVM.General.Internal.FFI.RawOStream
 import LLVM.General.Internal.FFI.Context 
 import LLVM.General.Internal.FFI.MemoryBuffer

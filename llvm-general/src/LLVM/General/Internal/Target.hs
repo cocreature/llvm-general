@@ -6,8 +6,7 @@
   #-}
 module LLVM.General.Internal.Target where
 
-import LLVM.General.Prelude
-
+import Control.Monad
 import Control.Exception
 import Control.Monad.AnyCont
 import Control.Monad.Error.Class
@@ -25,9 +24,6 @@ import Text.ParserCombinators.Parsec hiding (many)
 import LLVM.General.Internal.Coding
 import LLVM.General.Internal.String ()
 import LLVM.General.Internal.LibraryFunction
-import LLVM.General.DataLayout
-
-import LLVM.General.AST.DataLayout
 
 import qualified LLVM.General.Internal.FFI.LLVMCTypes as FFI
 import qualified LLVM.General.Internal.FFI.Target as FFI
@@ -252,13 +248,6 @@ getHostCPUName = decodeM FFI.getHostCPUName
 getHostCPUFeatures :: IO (Map CPUFeature Bool)
 getHostCPUFeatures =
   decodeM =<< FFI.getHostCPUFeatures
-
--- | 'DataLayout' to use for the given 'TargetMachine'
-getTargetMachineDataLayout :: TargetMachine -> IO DataLayout
-getTargetMachineDataLayout (TargetMachine m) = do
-  dlString <- decodeM =<< FFI.getTargetMachineDataLayout m
-  let Right (Just dl) = runExcept . parseDataLayout BigEndian $ dlString
-  return dl
 
 -- | Initialize all targets so they can be found by 'lookupTarget'
 initializeAllTargets :: IO ()

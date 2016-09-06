@@ -4,8 +4,7 @@
 -- | Functions for handling the LLVM types
 module LLVM.General.Internal.FFI.Type where
 
-import LLVM.General.Prelude
-
+import Data.Word
 import Foreign.Ptr
 import Foreign.C
 

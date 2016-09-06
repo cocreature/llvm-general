@@ -6,13 +6,12 @@
 
 module LLVM.General.Internal.FFI.PassManager where
 
-import LLVM.General.Prelude
-
 import qualified Language.Haskell.TH as TH
 
 import Foreign.Ptr
 import Foreign.C
 
+import Control.Monad
 import LLVM.General.Internal.FFI.LLVMCTypes
 import LLVM.General.Internal.FFI.PtrHierarchy
 import LLVM.General.Internal.FFI.Cleanup

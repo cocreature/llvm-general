@@ -4,8 +4,6 @@
   #-}
 module LLVM.General.Internal.FFI.Target where
 
-import LLVM.General.Prelude
-
 import Foreign.Ptr
 import Foreign.C
 

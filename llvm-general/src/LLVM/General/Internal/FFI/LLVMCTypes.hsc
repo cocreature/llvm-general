@@ -5,7 +5,7 @@
 -- Encapsulate hsc macro weirdness here, supporting higher-level tricks elsewhere.
 module LLVM.General.Internal.FFI.LLVMCTypes where
 
-import LLVM.General.Prelude
+import Data.Data
 
 #define __STDC_LIMIT_MACROS
 #include "llvm-c/Core.h"

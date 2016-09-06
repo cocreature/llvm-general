@@ -7,8 +7,7 @@
 -- | This Haskell module is for/of functions for handling LLVM modules.
 module LLVM.General.Internal.Module where
 
-import LLVM.General.Prelude
-
+import Control.Monad
 import Control.Exception
 import Control.Monad.AnyCont
 import Control.Monad.Error.Class
@@ -34,10 +33,6 @@ import qualified LLVM.General.Internal.MemoryBuffer as MB
 import LLVM.General.Internal.RawOStream
 import LLVM.General.Internal.String
 import LLVM.General.Internal.Target
-
-import LLVM.General.DataLayout
-
-import qualified LLVM.General.AST.DataLayout as A
 
 -- | <http://llvm.org/doxygen/classllvm_1_1Module.html>
 newtype Module = Module (Ptr FFI.Module)
@@ -152,8 +147,3 @@ getTargetTriple :: Ptr FFI.Module -> IO (Maybe String)
 getTargetTriple m = do
   s <- decodeM =<< liftIO (FFI.getTargetTriple m)
   return $ if s == "" then Nothing else Just s
-
-getDataLayout :: Ptr FFI.Module -> IO (Maybe A.DataLayout)
-getDataLayout m = do
-  dlString <- decodeM =<< FFI.getDataLayout m
-  either fail return . runExcept . parseDataLayout A.BigEndian $ dlString

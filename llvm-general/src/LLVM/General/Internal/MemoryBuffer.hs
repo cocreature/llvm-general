@@ -4,8 +4,7 @@
   #-}
 module LLVM.General.Internal.MemoryBuffer where
 
-import LLVM.General.Prelude
-
+import Control.Monad
 import Control.Exception
 import Control.Monad.AnyCont
 import Control.Monad.Error.Class

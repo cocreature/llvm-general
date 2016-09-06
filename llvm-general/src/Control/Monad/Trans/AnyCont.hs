@@ -3,8 +3,6 @@
   #-}
 module Control.Monad.Trans.AnyCont where
 
-import LLVM.General.Prelude
-
 import Control.Monad.Cont
 
 newtype AnyContT m a = AnyContT { unAnyContT :: forall r . ContT r m a }

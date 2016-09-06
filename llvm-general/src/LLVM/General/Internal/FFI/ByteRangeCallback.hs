@@ -3,8 +3,6 @@
   #-}
 module LLVM.General.Internal.FFI.ByteRangeCallback where
 
-import LLVM.General.Prelude
-
 import Foreign.C
 import Foreign.Ptr
 

@@ -1,7 +1,7 @@
 -- | Code generation options, used in specifying TargetMachine
 module LLVM.General.CodeGenOpt where
 
-import LLVM.General.Prelude
+import Data.Data
 
 -- | <http://llvm.org/doxygen/namespacellvm_1_1CodeGenOpt.html>
 data Level

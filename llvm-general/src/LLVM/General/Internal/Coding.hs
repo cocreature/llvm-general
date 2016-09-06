@@ -6,8 +6,10 @@
   #-}
 module LLVM.General.Internal.Coding where
 
-import LLVM.General.Prelude
-
+import Data.Word
+import Data.Int
+import Control.Monad
+import Data.Data
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote
 

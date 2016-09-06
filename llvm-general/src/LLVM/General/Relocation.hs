@@ -1,7 +1,7 @@
 -- | Relocations, used in specifying TargetMachine
 module LLVM.General.Relocation where
 
-import LLVM.General.Prelude
+import Data.Data
 
 -- | <http://llvm.org/doxygen/namespacellvm_1_1Reloc.html>
 data Model 

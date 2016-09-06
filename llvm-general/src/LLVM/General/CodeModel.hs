@@ -1,7 +1,8 @@
 -- | Relocations, used in specifying TargetMachine
 module LLVM.General.CodeModel where
 
-import LLVM.General.Prelude
+import Data.Data
+import Data.Typeable
 
 -- | <http://llvm.org/doxygen/namespacellvm_1_1CodeModel.html>
 data Model
