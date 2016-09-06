@@ -12,8 +12,6 @@ import LLVM.General.Prelude
 #include "llvm-c/Target.h"
 #include "llvm-c/TargetMachine.h"
 #include "llvm-c/Linker.h"
-#include "LLVM/General/Internal/FFI/Attribute.h"
-#include "LLVM/General/Internal/FFI/Value.h"
 #include "LLVM/General/Internal/FFI/SMDiagnostic.h"
 #include "LLVM/General/Internal/FFI/Target.h"
 #include "LLVM/General/Internal/FFI/CallingConvention.h"
@@ -134,11 +132,6 @@ newtype ThreadLocalMode = ThreadLocalMode CUInt
 #define TLS_Rec(n) { #n, LLVM ## n },
 #{inject THREAD_LOCAL_MODE, ThreadLocalMode, ThreadLocalMode, threadLocalMode, TLS_Rec}
 
-newtype ValueSubclassId = ValueSubclassId CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define VSID_Rec(n) { #n, LLVM ## n ## SubclassId },
-#{inject VALUE_SUBCLASS, ValueSubclassId, ValueSubclassId, valueSubclassId, VSID_Rec}
-
 newtype DiagnosticKind = DiagnosticKind CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define DK_Rec(n) { #n, LLVMDiagnosticKind ## n },
@@ -194,15 +187,6 @@ newtype TypeKind = TypeKind CUInt
 #define OR_FT T
 #define OR_FF F  
 #define OR(x,y) OR_ ## x ## y
-newtype ParameterAttributeKind = ParameterAttributeKind CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define PAK_Rec(n,p,r,f) IF(OR(p,r))({ #n COMMA LLVM_General_AttributeKind_ ## n} COMMA)
-#{inject ATTRIBUTE_KIND, ParameterAttributeKind, ParameterAttributeKind, parameterAttributeKind, PAK_Rec}
-
-newtype FunctionAttributeKind = FunctionAttributeKind CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define FAK_Rec(n,p,r,f) IF(f)({ #n COMMA LLVM_General_AttributeKind_ ## n} COMMA)
-#{inject ATTRIBUTE_KIND, FunctionAttributeKind, FunctionAttributeKind, functionAttributeKind, FAK_Rec}
 
 newtype LinkerMode = LinkerMode CUInt
   deriving (Eq, Read, Show, Bits, Typeable, Data, Num)

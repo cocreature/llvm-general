@@ -18,8 +18,6 @@ description:
   handles almost all of the stateful complexities of using the LLVM API to build IR; and it supports moving IR not
   only from Haskell into LLVM C++ objects, but the other direction - from LLVM C++ into Haskell.
 extra-source-files:
-  src/LLVM/General/Internal/FFI/Attribute.h
-  src/LLVM/General/Internal/FFI/AttributeC.hpp
   src/LLVM/General/Internal/FFI/CallingConvention.h
   src/LLVM/General/Internal/FFI/CallingConventionC.hpp
   src/LLVM/General/Internal/FFI/GlobalValue.h
@@ -28,7 +26,6 @@ extra-source-files:
   src/LLVM/General/Internal/FFI/SMDiagnostic.h
   src/LLVM/General/Internal/FFI/Target.h
   src/LLVM/General/Internal/FFI/Type.h
-  src/LLVM/General/Internal/FFI/Value.h
 tested-with: GHC == 7.8.4, GHC == 7.10.3, GHC == 8.0.1
 
 source-repository head
@@ -104,7 +101,6 @@ library
     LLVM.General.Internal.RawOStream
     LLVM.General.Internal.String
     LLVM.General.Internal.Target
-    LLVM.General.Internal.FFI.Attribute
     LLVM.General.Internal.FFI.Assembly
     LLVM.General.Internal.FFI.Bitcode
     LLVM.General.Internal.FFI.ByteRangeCallback
@@ -113,7 +109,6 @@ library
     LLVM.General.Internal.FFI.DataLayout
     LLVM.General.Internal.FFI.GlobalValue
     LLVM.General.Internal.FFI.InstructionDefs
-    LLVM.General.Internal.FFI.Iterate
     LLVM.General.Internal.FFI.LLVMCTypes
     LLVM.General.Internal.FFI.MemoryBuffer
     LLVM.General.Internal.FFI.Module
@@ -124,12 +119,10 @@ library
     LLVM.General.Internal.FFI.Target
     LLVM.General.Internal.FFI.Transforms
     LLVM.General.Internal.FFI.Type
-    LLVM.General.Internal.FFI.Value
 
   include-dirs: src
   c-sources:
     src/LLVM/General/Internal/FFI/AssemblyC.cpp
-    src/LLVM/General/Internal/FFI/AttributeC.cpp
     src/LLVM/General/Internal/FFI/BitcodeC.cpp
     src/LLVM/General/Internal/FFI/GlobalValueC.cpp
     src/LLVM/General/Internal/FFI/ModuleC.cpp
@@ -138,7 +131,6 @@ library
     src/LLVM/General/Internal/FFI/SMDiagnosticC.cpp
     src/LLVM/General/Internal/FFI/TargetC.cpp
     src/LLVM/General/Internal/FFI/TypeC.cpp
-    src/LLVM/General/Internal/FFI/ValueC.cpp
 
   if flag(debug)
     cc-options: -g
