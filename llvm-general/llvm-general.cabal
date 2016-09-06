@@ -70,10 +70,6 @@ library
     StandaloneDeriving
     ConstraintKinds
   exposed-modules:
-    LLVM.General.CodeGenOpt
-    LLVM.General.CodeModel
-    LLVM.General.Relocation
-    LLVM.General.Target.LibraryFunction
     LLVM.General.Target.Options
     LLVM.General.Transforms
 
@@ -91,14 +87,12 @@ library
     LLVM.General.Internal.RawOStream
     LLVM.General.Internal.String
     LLVM.General.Internal.Target
-    LLVM.General.Internal.FFI.Bitcode
     LLVM.General.Internal.FFI.Cleanup
     LLVM.General.Internal.FFI.Context
     LLVM.General.Internal.FFI.DataLayout
     LLVM.General.Internal.FFI.LLVMCTypes
     LLVM.General.Internal.FFI.Module
     LLVM.General.Internal.FFI.PassManager
-    LLVM.General.Internal.FFI.PtrHierarchy
     LLVM.General.Internal.FFI.RawOStream
     LLVM.General.Internal.FFI.Target
     LLVM.General.Internal.FFI.Transforms
