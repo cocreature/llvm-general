@@ -95,7 +95,6 @@ library
     LLVM.General.Internal.Coding
     LLVM.General.Internal.Context
     LLVM.General.Internal.DataLayout
-    LLVM.General.Internal.EncodeAST
     LLVM.General.Internal.Inject
     LLVM.General.Internal.InstructionDefs
     LLVM.General.Internal.LibraryFunction
@@ -108,7 +107,6 @@ library
     LLVM.General.Internal.FFI.Attribute
     LLVM.General.Internal.FFI.Assembly
     LLVM.General.Internal.FFI.Bitcode
-    LLVM.General.Internal.FFI.Builder
     LLVM.General.Internal.FFI.ByteRangeCallback
     LLVM.General.Internal.FFI.Cleanup
     LLVM.General.Internal.FFI.Context
@@ -133,7 +131,6 @@ library
     src/LLVM/General/Internal/FFI/AssemblyC.cpp
     src/LLVM/General/Internal/FFI/AttributeC.cpp
     src/LLVM/General/Internal/FFI/BitcodeC.cpp
-    src/LLVM/General/Internal/FFI/BuilderC.cpp
     src/LLVM/General/Internal/FFI/GlobalValueC.cpp
     src/LLVM/General/Internal/FFI/ModuleC.cpp
     src/LLVM/General/Internal/FFI/RawOStreamC.cpp

@@ -13,15 +13,12 @@ import LLVM.General.Prelude
 #include "llvm-c/TargetMachine.h"
 #include "llvm-c/Linker.h"
 #include "LLVM/General/Internal/FFI/Attribute.h"
-#include "LLVM/General/Internal/FFI/Instruction.h" 
 #include "LLVM/General/Internal/FFI/Value.h"
 #include "LLVM/General/Internal/FFI/SMDiagnostic.h"
-#include "LLVM/General/Internal/FFI/InlineAssembly.h"
 #include "LLVM/General/Internal/FFI/Target.h"
 #include "LLVM/General/Internal/FFI/CallingConvention.h"
 #include "LLVM/General/Internal/FFI/GlobalValue.h"
 #include "LLVM/General/Internal/FFI/Type.h"
-#include "LLVM/General/Internal/FFI/Constant.h"
 #include "LLVM/General/Internal/FFI/Module.h"
 #include "LLVM/General/Internal/FFI/LibFunc.h"
 
@@ -107,26 +104,6 @@ newtype FCmpPredicate = FCmpPredicate CUInt
 newtype MDKindID = MDKindID CUInt
   deriving (Storable)
 
-newtype FastMathFlags = FastMathFlags CUInt
-  deriving (Eq, Ord, Show, Typeable, Data, Num, Bits)
-#define FMF_Rec(n,l) { #n, LLVM ## n, },
-#{inject FAST_MATH_FLAG, FastMathFlags, FastMathFlags, fastMathFlags, FMF_Rec}
-
-newtype MemoryOrdering = MemoryOrdering CUInt
-  deriving (Eq, Typeable, Data)
-#define MO_Rec(n) { #n, LLVMAtomicOrdering ## n },
-#{inject ATOMIC_ORDERING, MemoryOrdering, MemoryOrdering, memoryOrdering, MO_Rec}
-
-newtype SynchronizationScope = SynchronizationScope CUInt
-  deriving (Eq, Typeable, Data)
-#define SS_Rec(n) { #n, LLVM ## n ## SynchronizationScope },
-#{inject SYNCRONIZATION_SCOPE, SynchronizationScope, SynchronizationScope, synchronizationScope, SS_Rec}
-
-newtype TailCallKind = TailCallKind CUInt
-  deriving (Eq, Typeable, Data)
-#define TCK_Rec(n) { #n, LLVM_General_TailCallKind_ ## n },
-#{inject TAIL_CALL_KIND, TailCallKind, TailCallKind, tailCallKind, TCK_Rec}
-
 newtype Linkage = Linkage CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define LK_Rec(n) { #n, LLVM ## n ## Linkage },
@@ -166,16 +143,6 @@ newtype DiagnosticKind = DiagnosticKind CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define DK_Rec(n) { #n, LLVMDiagnosticKind ## n },
 #{inject DIAGNOSTIC_KIND, DiagnosticKind, DiagnosticKind, diagnosticKind, DK_Rec}
-
-newtype AsmDialect = AsmDialect CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define ASM_Rec(n) { #n, LLVMAsmDialect_ ## n },
-#{inject ASM_DIALECT, AsmDialect, AsmDialect, asmDialect, ASM_Rec}
-
-newtype RMWOperation = RMWOperation CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define RMWOp_Rec(n) { #n, LLVMAtomicRMWBinOp ## n },
-#{inject RMW_OPERATION, RMWOperation, RMWOperation, rmwOperation, RMWOp_Rec}
 
 newtype RelocModel = RelocModel CUInt
   deriving (Eq, Read, Show, Typeable, Data)
@@ -236,11 +203,6 @@ newtype FunctionAttributeKind = FunctionAttributeKind CUInt
   deriving (Eq, Read, Show, Typeable, Data)
 #define FAK_Rec(n,p,r,f) IF(f)({ #n COMMA LLVM_General_AttributeKind_ ## n} COMMA)
 #{inject ATTRIBUTE_KIND, FunctionAttributeKind, FunctionAttributeKind, functionAttributeKind, FAK_Rec}
-
-newtype FloatSemantics = FloatSemantics CUInt
-  deriving (Eq, Read, Show, Typeable, Data)
-#define FS_Rec(n) { #n, LLVMFloatSemantics ## n },
-#{inject FLOAT_SEMANTICS, FloatSemantics, FloatSemantics, floatSemantics, FS_Rec}
 
 newtype LinkerMode = LinkerMode CUInt
   deriving (Eq, Read, Show, Bits, Typeable, Data, Num)

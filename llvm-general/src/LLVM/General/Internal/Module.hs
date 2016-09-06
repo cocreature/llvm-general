@@ -30,7 +30,6 @@ import qualified LLVM.General.Internal.FFI.Target as FFI
 
 import LLVM.General.Internal.Coding
 import LLVM.General.Internal.Context
-import LLVM.General.Internal.EncodeAST
 import LLVM.General.Internal.Inject
 import qualified LLVM.General.Internal.MemoryBuffer as MB
 import LLVM.General.Internal.RawOStream
@@ -169,20 +168,10 @@ moduleObject = emitToByteString FFI.codeGenFileTypeObject
 writeObjectToFile :: TargetMachine -> File -> Module -> ExceptT String IO ()
 writeObjectToFile = emitToFile FFI.codeGenFileTypeObject
 
-setTargetTriple :: Ptr FFI.Module -> String -> EncodeAST ()
-setTargetTriple m t = do
-  t <- encodeM t
-  liftIO $ FFI.setTargetTriple m t
-
 getTargetTriple :: Ptr FFI.Module -> IO (Maybe String)
 getTargetTriple m = do
   s <- decodeM =<< liftIO (FFI.getTargetTriple m)
   return $ if s == "" then Nothing else Just s
-
-setDataLayout :: Ptr FFI.Module -> A.DataLayout -> EncodeAST ()
-setDataLayout m dl = do
-  s <- encodeM (dataLayoutToString dl)
-  liftIO $ FFI.setDataLayout m s
 
 getDataLayout :: Ptr FFI.Module -> IO (Maybe A.DataLayout)
 getDataLayout m = do

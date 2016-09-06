@@ -78,6 +78,5 @@ typeMapping t = case t of
          | h == ''A.C.Constant -> [t| Ptr FFI.Constant |]
          | h == ''A.FloatingPointPredicate -> [t| FCmpPredicate |]
          | h == ''A.IntegerPredicate -> [t| ICmpPredicate |]
-         | h == ''A.FastMathFlags -> [t| FastMathFlags |]
   AppT ListT x -> foldl1 appT [tupleT 2, [t| CUInt |], appT [t| Ptr |] (typeMapping x)]
   x -> error $ "type not handled in Cleanup typeMapping: " ++ show x
