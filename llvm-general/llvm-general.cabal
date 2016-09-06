@@ -132,7 +132,6 @@ library
     LLVM.General.Internal.String
     LLVM.General.Internal.TailCallKind
     LLVM.General.Internal.Target
-    LLVM.General.Internal.Threading
     LLVM.General.Internal.Type
     LLVM.General.Internal.Value
     LLVM.General.Internal.FFI.Analysis
