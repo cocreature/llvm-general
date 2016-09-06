@@ -90,7 +90,6 @@ library
     LLVM.General.Analysis
     LLVM.General.CodeGenOpt
     LLVM.General.CodeModel
-    LLVM.General.CommandLine
     LLVM.General.Context
     LLVM.General.Diagnostic
     LLVM.General.Module
@@ -98,7 +97,6 @@ library
     LLVM.General.Target
     LLVM.General.Target.LibraryFunction
     LLVM.General.Target.Options
-    LLVM.General.Threading
     LLVM.General.Transforms
 
   other-modules:
