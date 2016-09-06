@@ -27,19 +27,17 @@ data PassManager
 foreign import ccall unsafe "LLVMCreatePassManager" createPassManager ::
   IO (Ptr PassManager)
 
-foreign import ccall unsafe "LLVMDisposePassManager" disposePassManager ::
-  Ptr PassManager -> IO ()
+disposePassManager :: Ptr PassManager -> IO ()
+disposePassManager = undefined
 
-foreign import ccall unsafe "LLVMRunPassManager" runPassManager ::
-  Ptr PassManager -> Ptr Module -> IO CUInt
+runPassManager :: Ptr PassManager -> Ptr Module -> IO CUInt
+runPassManager = undefined
 
-foreign import ccall unsafe "LLVMAddTargetData" addDataLayoutPass' ::
-  Ptr DataLayout -> Ptr PassManager -> IO ()
+addDataLayoutPass :: Ptr DataLayout -> Ptr PassManager -> IO ()
+addDataLayoutPass = undefined
 
-addDataLayoutPass = flip addDataLayoutPass'
-
-foreign import ccall unsafe "LLVMAddAnalysisPasses" addAnalysisPasses ::
-  Ptr TargetMachine -> Ptr PassManager -> IO ()
+addAnalysisPasses :: Ptr TargetMachine -> Ptr PassManager -> IO ()
+addAnalysisPasses = undefined
 
 $(do
   let declareForeign :: TH.Name -> [TH.Type] -> TH.DecsQ
