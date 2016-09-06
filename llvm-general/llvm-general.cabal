@@ -97,7 +97,6 @@ library
     LLVM.General.Internal.FFI.Context
     LLVM.General.Internal.FFI.DataLayout
     LLVM.General.Internal.FFI.LLVMCTypes
-    LLVM.General.Internal.FFI.MemoryBuffer
     LLVM.General.Internal.FFI.Module
     LLVM.General.Internal.FFI.PassManager
     LLVM.General.Internal.FFI.PtrHierarchy

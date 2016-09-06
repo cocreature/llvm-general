@@ -83,36 +83,6 @@ withModuleFromLLVMAssembly (Context c) s f = flip runAnyContT return $ do
   m <- anyContToM $ bracket undefined FFI.disposeModule
   liftIO $ f (Module m)
 
-class BitcodeInput b where
-  bitcodeMemoryBuffer :: (Inject String e, MonadError e m, MonadIO m, MonadAnyCont IO m)
-                         => b -> m (Ptr FFI.MemoryBuffer)
-
-instance BitcodeInput (String, BS.ByteString) where
-  bitcodeMemoryBuffer (s, bs) = encodeM (MB.Bytes s bs)
-
-instance BitcodeInput File where
-  bitcodeMemoryBuffer (File p) = encodeM (MB.File p)
-
--- | parse 'Module' from LLVM bitcode
-withModuleFromBitcode :: BitcodeInput b => Context -> b -> (Module -> IO a) -> ExceptT String IO a
-withModuleFromBitcode (Context c) b f = flip runAnyContT return $ do
-  mb <- bitcodeMemoryBuffer b
-  msgPtr <- alloca
-  m <- anyContToM $ bracket (FFI.parseBitcode c mb msgPtr) FFI.disposeModule
-  when (m == nullPtr) $ throwError =<< decodeM msgPtr
-  liftIO $ f (Module m)
-
--- | generate LLVM bitcode from a 'Module'
-moduleBitcode :: Module -> IO BS.ByteString
-moduleBitcode (Module m) = do
-  r <- runExceptT $ withBufferRawOStream (liftIO . FFI.writeBitcode m)
-  either fail return r
-
--- | write LLVM bitcode from a 'Module' into a file
-writeBitcodeToFile :: File -> Module -> ExceptT String IO ()
-writeBitcodeToFile (File path) (Module m) = flip runAnyContT return $ do
-  withFileRawOStream path False False $ liftIO . FFI.writeBitcode m
-
 targetMachineEmit :: FFI.CodeGenFileType -> TargetMachine -> Module -> Ptr FFI.RawPWriteStream -> ExceptT String IO ()
 targetMachineEmit fileType (TargetMachine tm) (Module m) os = flip runAnyContT return $ do
   msgPtr <- alloca
