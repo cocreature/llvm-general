@@ -54,11 +54,6 @@ addDataLayoutPass = flip addDataLayoutPass'
 foreign import ccall unsafe "LLVMAddAnalysisPasses" addAnalysisPasses ::
   Ptr TargetMachine -> Ptr PassManager -> IO ()
 
-foreign import ccall unsafe "LLVMAddTargetLibraryInfo" addTargetLibraryInfoPass' ::
-  Ptr TargetLibraryInfo -> Ptr PassManager -> IO ()
-
-addTargetLibraryInfoPass = flip addTargetLibraryInfoPass'
-
 $(do
   let declareForeign :: TH.Name -> [TH.Type] -> TH.DecsQ
       declareForeign hName extraParams = do
@@ -80,7 +75,6 @@ $(do
           (cName n)
           ("add" ++ n ++ "Pass")
           ([[t| Ptr PassManager |]] 
-           ++ [[t| Ptr TargetMachine |] | needsTargetMachine n]
            ++ map passTypeMapping extraParams)
           (TH.tupleT 0)
 #if __GLASGOW_HASKELL__ < 800

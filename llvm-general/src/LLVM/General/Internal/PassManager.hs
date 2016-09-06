@@ -21,7 +21,6 @@ import qualified LLVM.General.Internal.FFI.PassManager as FFI
 import qualified LLVM.General.Internal.FFI.Transforms as FFI
 
 import LLVM.General.Internal.Module
-import LLVM.General.Internal.Target
 import LLVM.General.Internal.Coding
 import LLVM.General.Internal.DataLayout
 import LLVM.General.Transforms
@@ -41,9 +40,7 @@ data PassSetSpec
   -- of passes not available through 'CuratedPassSetSpec'.
   = PassSetSpec {
       transforms :: [Pass],
-      dataLayout :: Maybe DataLayout,
-      targetLibraryInfo :: Maybe TargetLibraryInfo,
-      targetMachine :: Maybe TargetMachine
+      dataLayout :: Maybe DataLayout
     }
   -- | This type is a high-level specification of a set of passes. It uses the same
   -- collection of passes chosen by the LLVM team in the command line tool 'opt'.  The fields
@@ -56,9 +53,7 @@ data PassSetSpec
       loopVectorize :: Maybe Bool,
       superwordLevelParallelismVectorize :: Maybe Bool,
       useInlinerWithThreshold :: Maybe Word,
-      dataLayout :: Maybe DataLayout,
-      targetLibraryInfo :: Maybe TargetLibraryInfo,
-      targetMachine :: Maybe TargetMachine
+      dataLayout :: Maybe DataLayout
     }
 
 -- | Helper to make a curated 'PassSetSpec'
@@ -70,17 +65,13 @@ defaultCuratedPassSetSpec = CuratedPassSetSpec {
   loopVectorize = Nothing,
   superwordLevelParallelismVectorize = Nothing,
   useInlinerWithThreshold = Nothing,
-  dataLayout = Nothing,
-  targetLibraryInfo = Nothing,
-  targetMachine = Nothing
+  dataLayout = Nothing
 }
 
 -- | an empty 'PassSetSpec'
 defaultPassSetSpec = PassSetSpec {
   transforms = [],
-  dataLayout = Nothing,
-  targetLibraryInfo = Nothing,
-  targetMachine = Nothing
+  dataLayout = Nothing
 }
 
 instance (Monad m, MonadAnyCont IO m) => EncodeM m GCOVVersion CString where
@@ -89,10 +80,7 @@ instance (Monad m, MonadAnyCont IO m) => EncodeM m GCOVVersion CString where
 createPassManager :: PassSetSpec -> IO (Ptr FFI.PassManager)
 createPassManager pss = flip runAnyContT return $ do
   pm <- liftIO $ FFI.createPassManager
-  forM_ (dataLayout pss) $ \dl -> liftIO $ withFFIDataLayout dl $ FFI.addDataLayoutPass pm 
-  forM_ (targetLibraryInfo pss) $ \(TargetLibraryInfo tli) -> do
-    liftIO $ FFI.addTargetLibraryInfoPass pm tli
-  forM_ (targetMachine pss) $ \(TargetMachine tm) -> liftIO $ FFI.addAnalysisPasses tm pm
+  forM_ (dataLayout pss) $ \dl -> liftIO $ withFFIDataLayout dl $ FFI.addDataLayoutPass pm
   case pss of
     s@CuratedPassSetSpec {} -> liftIO $ do
       bracket FFI.passManagerBuilderCreate FFI.passManagerBuilderDispose $ \b -> do
@@ -105,8 +93,7 @@ createPassManager pss = flip runAnyContT return $ do
         handleOption FFI.passManagerBuilderSetLoopVectorize loopVectorize
         handleOption FFI.passManagerBuilderSetSuperwordLevelParallelismVectorize superwordLevelParallelismVectorize
         FFI.passManagerBuilderPopulateModulePassManager b pm
-    PassSetSpec ps dl tli tm' -> do
-      let tm = maybe nullPtr (\(TargetMachine tm) -> tm) tm'
+    PassSetSpec ps dl -> do
       forM_ ps $ \p -> $(
         do
 #if __GLASGOW_HASKELL__ < 800
@@ -127,7 +114,6 @@ createPassManager pss = flip runAnyContT return $ do
                      foldl1 TH.appE
                      (map TH.dyn $
                         ["FFI.add" ++ TH.nameBase n ++ "Pass", "pm"]
-                        ++ ["tm" | FFI.needsTargetMachine (TH.nameBase n)]
                         ++ fns)
                     )
                    |]
