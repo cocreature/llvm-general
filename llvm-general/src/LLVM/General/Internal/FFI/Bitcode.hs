@@ -14,11 +14,11 @@ import LLVM.General.Internal.FFI.LLVMCTypes
 import Foreign.C
 import Foreign.Ptr
 
-foreign import ccall unsafe "LLVM_General_ParseBitcode" parseBitcode ::
-  Ptr Context -> Ptr MemoryBuffer -> Ptr (OwnerTransfered CString) -> IO (Ptr Module)
+parseBitcode :: Ptr Context -> Ptr MemoryBuffer -> Ptr (OwnerTransfered CString) -> IO (Ptr Module)
+parseBitcode = undefined
 
-foreign import ccall unsafe "LLVM_General_WriteBitcode" writeBitcode ::
-  Ptr Module -> Ptr RawOStream -> IO ()
+writeBitcode :: Ptr Module -> Ptr RawOStream -> IO ()
+writeBitcode = undefined
 
-                               
+
 

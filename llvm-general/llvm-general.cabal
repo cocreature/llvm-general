@@ -95,7 +95,6 @@ library
     LLVM.General.Internal.String
     LLVM.General.Internal.Target
     LLVM.General.Internal.FFI.Bitcode
-    LLVM.General.Internal.FFI.ByteRangeCallback
     LLVM.General.Internal.FFI.Cleanup
     LLVM.General.Internal.FFI.Context
     LLVM.General.Internal.FFI.DataLayout
@@ -110,7 +109,6 @@ library
 
   include-dirs: src
   c-sources:
-    src/LLVM/General/Internal/FFI/BitcodeC.cpp
     src/LLVM/General/Internal/FFI/ModuleC.cpp
     src/LLVM/General/Internal/FFI/RawOStreamC.cpp
     src/LLVM/General/Internal/FFI/PassManagerC.cpp

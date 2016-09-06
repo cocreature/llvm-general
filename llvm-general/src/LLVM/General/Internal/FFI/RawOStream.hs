@@ -7,28 +7,16 @@ import Foreign.Ptr
 import Foreign.C
 import Control.Exception (bracket)
 
-import LLVM.General.Internal.FFI.ByteRangeCallback
 import LLVM.General.Internal.FFI.LLVMCTypes
 
 data RawOStream
 data RawPWriteStream
 
 type RawOStreamCallback = Ptr RawOStream -> IO ()
-foreign import ccall "wrapper" wrapRawOStreamCallback ::
-  RawOStreamCallback -> IO (FunPtr RawOStreamCallback)
+type ByteRangeCallback = Ptr CChar -> CSize -> IO ()
 
-foreign import ccall safe "LLVM_General_WithFileRawOStream" withFileRawOStream' ::
-  CString -> LLVMBool -> LLVMBool -> Ptr (OwnerTransfered CString) -> FunPtr RawOStreamCallback -> IO LLVMBool
- 
 withFileRawOStream :: CString -> LLVMBool -> LLVMBool -> Ptr (OwnerTransfered CString) -> RawOStreamCallback -> IO LLVMBool
-withFileRawOStream p ex bin err c = 
-  bracket (wrapRawOStreamCallback c) freeHaskellFunPtr (withFileRawOStream' p ex bin err)
-
-foreign import ccall safe "LLVM_General_WithBufferRawOStream" withBufferRawOStream' ::
-  FunPtr ByteRangeCallback -> FunPtr RawOStreamCallback -> IO ()
+withFileRawOStream p ex bin err c = undefined
 
 withBufferRawOStream :: ByteRangeCallback -> RawOStreamCallback -> IO ()
-withBufferRawOStream oc c = 
-  bracket (wrapRawOStreamCallback c) freeHaskellFunPtr $ \c -> 
-  bracket (wrapByteRangeCallback oc) freeHaskellFunPtr $ \oc ->
-    withBufferRawOStream' oc c
+withBufferRawOStream oc c = undefined
