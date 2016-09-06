@@ -84,13 +84,10 @@ library
     LLVM.General.Internal.Target
     LLVM.General.Internal.FFI.Cleanup
     LLVM.General.Internal.FFI.Context
-    LLVM.General.Internal.FFI.DataLayout
     LLVM.General.Internal.FFI.LLVMCTypes
     LLVM.General.Internal.FFI.Module
     LLVM.General.Internal.FFI.PassManager
-    LLVM.General.Internal.FFI.RawOStream
     LLVM.General.Internal.FFI.Target
-    LLVM.General.Internal.FFI.Transforms
 
   include-dirs: src
   c-sources:

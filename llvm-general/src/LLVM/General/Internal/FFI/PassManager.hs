@@ -16,8 +16,6 @@ import LLVM.General.Internal.FFI.LLVMCTypes
 import LLVM.General.Internal.FFI.Cleanup
 import LLVM.General.Internal.FFI.Module
 import LLVM.General.Internal.FFI.Target
-import LLVM.General.Internal.FFI.DataLayout
-import LLVM.General.Internal.FFI.Transforms
 
 import qualified LLVM.General.Transforms as G
 
@@ -31,9 +29,6 @@ disposePassManager = undefined
 
 runPassManager :: Ptr PassManager -> Ptr Module -> IO CUInt
 runPassManager = undefined
-
-addDataLayoutPass :: Ptr DataLayout -> Ptr PassManager -> IO ()
-addDataLayoutPass = undefined
 
 addAnalysisPasses :: Ptr TargetMachine -> Ptr PassManager -> IO ()
 addAnalysisPasses = undefined
@@ -56,7 +51,7 @@ $(do
                   _ -> typeMapping t
               _ -> typeMapping t
         foreignDecl 
-          (cName n)
+          n
           ("add" ++ n ++ "Pass")
           ([[t| Ptr PassManager |]] 
            ++ map passTypeMapping extraParams)

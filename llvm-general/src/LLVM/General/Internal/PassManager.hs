@@ -7,7 +7,6 @@ module LLVM.General.Internal.PassManager where
 
 import qualified Language.Haskell.TH as TH
 import Control.Monad
-import Control.Exception
 import Control.Monad.IO.Class
 
 import Control.Monad.AnyCont
@@ -103,8 +102,8 @@ createPassManager pss = flip runAnyContT return $ do
 
 -- | bracket the creation of a 'PassManager'
 withPassManager :: PassSetSpec -> (PassManager -> IO a) -> IO a
-withPassManager s = bracket (createPassManager s) FFI.disposePassManager . (. PassManager)
+withPassManager s = undefined
 
 -- | run the passes in a 'PassManager' on a 'Module', modifying the 'Module'.
 runPassManager :: PassManager -> Module -> IO Bool
-runPassManager (PassManager p) (Module m) = toEnum . fromIntegral <$> FFI.runPassManager p m
+runPassManager (PassManager p) (Module m) = undefined
